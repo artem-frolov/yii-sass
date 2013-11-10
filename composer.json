@@ -1,0 +1,25 @@
+{
+    "name": "artem-frolov/yii-sass",
+    "type": "library",
+    "description": "SASS and Compass support for the Yii framework",
+    "keywords": ["yii","sass","compass","scss","css"],
+    "homepage": "https://github.com/artem-frolov/yii-sass",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Artem Frolov",
+            "email": "artem@frolov.net",
+            "homepage": "http://frolov.net/",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": ">=5.1.0",
+        "leafo/scssphp-compass": "dev-master"
+    },
+    "autoload": {
+        "psr-0": {
+            "Sass": ""
+        }
+    }
+}
