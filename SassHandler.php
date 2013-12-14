@@ -90,13 +90,22 @@ class SassHandler extends CApplicationComponent
     public $allowOverwrite = true;
     
     /**
-     * Automatically add directory of .scss file being processed
+     * Automatically add directory containing SCSS file being processed
      * as an import path for the @import Sass directive.
      * Defaults to true
      * 
      * @var boolean
      */
-    public $autoAddImportPath = true;
+    public $autoAddCurrentDirectoryAsImportPath = true;
+    
+    /**
+     * List of import paths.
+     * Can be strings or callable functions:
+     * function($searchPath) {return $targetPath;}
+     * 
+     * @var array
+     */
+    public $importPaths = array();
     
     /**
      * Chmod permissions used for creating/updating of writable
@@ -188,7 +197,7 @@ class SassHandler extends CApplicationComponent
      */
     public function compile($sourcePath)
     {
-        if ($this->autoAddImportPath) {
+        if ($this->autoAddCurrentDirectoryAsImportPath) {
             $originalImportPaths = $this->compiler->getImportPaths();
             $this->compiler->addImportPath(dirname($sourcePath));
         }
@@ -200,7 +209,7 @@ class SassHandler extends CApplicationComponent
         
         $compiledCssCode = $this->compiler->compile($sourceCode);
 
-        if ($this->autoAddImportPath) {
+        if ($this->autoAddCurrentDirectoryAsImportPath) {
             $this->compiler->setImportPaths($originalImportPaths);
         }
         
@@ -221,6 +230,7 @@ class SassHandler extends CApplicationComponent
             }
             require_once dirname(__FILE__) . '/ExtendedScssc.php';
             $this->scssc = new ExtendedScssc();
+            $this->setImportPaths($this->importPaths);
             if ($this->enableCompass) {
                 if (is_readable($this->compassPath)) {
                     require_once $this->compassPath;
@@ -229,6 +239,32 @@ class SassHandler extends CApplicationComponent
             }
         }
         return $this->scssc;
+    }
+    
+    /**
+     * Set import paths for compiler.
+     * Paths will be used for @import Sass method.
+     * Each path can be a filesystem paths.
+     * Or an Yii path with application aliases (like "application").
+     * 
+     * @param array|string $paths Single import path or list of paths
+     */
+    protected function setImportPaths($paths)
+    {
+        $paths = (array) $paths;
+        $preparedPaths = array();
+        
+        foreach ($paths as $originalPath) {
+            $preparedPath = YiiBase::getPathOfAlias($originalPath);
+            if ($preparedPath !== false) {
+                $preparedPaths[] = $preparedPath;
+            }
+            else {
+                $preparedPaths[] = $originalPath;
+            }
+        }
+        
+        $this->scssc->setImportPaths($preparedPaths);
     }
     
     /**
