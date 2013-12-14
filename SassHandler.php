@@ -60,7 +60,7 @@ class SassHandler extends CApplicationComponent
     public $sassCompiledPath = 'application.runtime.sass-compiled';
     
     /**
-     * Force recompilation on each request.
+     * Force compilation/recompilation on each request.
      * 
      * False value means that compilation will be done only if 
      * source .scss file or related imported files have been
@@ -132,55 +132,43 @@ class SassHandler extends CApplicationComponent
     }
     
     /**
-     * Compile, publish and register CSS compiled file
+     * Publish and register compiled CSS file.
+     * Compile/recompile source .scss file if needed
      * 
-     * @param string $path Path to the source .scss file
+     * @param string $sourcePath Path to the source .scss file
      * @param string $media Media that the CSS file should be applied to. If empty, it means all media types.
      */
-    public function register($path, $media = '')
+    public function register($sourcePath, $media = '')
     {
-        $published = $this->publish($path);
-        Yii::app()->clientScript->registerCssFile($published, $media);
+        $publishedPath = $this->publish($sourcePath);
+        Yii::app()->clientScript->registerCssFile($publishedPath, $media);
     }
 
     /**
-     * Compile and publish compiled CSS file
+     * Publish compiled CSS file.
+     * Compile/recompile source .scss file if needed
      * 
-     * @param string $path Path to the source .scss file
+     * @param string $sourcePath Path to the source .scss file
      * @return string Path to the published CSS file
      */
-    public function publish($path)
+    public function publish($sourcePath)
     {
-        $compiled = $this->compile($path);
+        $compiled = $this->getCompiledFile($sourcePath);
         return Yii::app()->assetManager->publish($compiled);
     }
-
+    
     /**
-     * Compile .scss file
+     * Get path to the compiled CSS file, compile/recompile source file if needed
      * 
-     * @param string $sourcePath
+     * @param string $sourcePath Path to the source .scss file
      * @throws CException
      * @return string
      */
-    public function compile($sourcePath)
+    public function getCompiledFile($sourcePath)
     {
         $cssPath = $this->getCompiledCssFilePath($sourcePath);
-        if ($this->isRecompilationNeeded($sourcePath)) {
-            if ($this->autoAddImportPath) {
-                $originalImportPaths = $this->compiler->getImportPaths();
-                $this->compiler->addImportPath(dirname($sourcePath));
-            }
-            
-            $sourceCode = file_get_contents($sourcePath);
-            if ($sourceCode === false) {
-                throw new CException('Can not read from the file: ' . $sourcePath);
-            }
-            
-            $compiledCssCode = $this->compiler->compile($sourceCode);
-
-            if ($this->autoAddImportPath) {
-                $this->compiler->setImportPaths($originalImportPaths);
-            }
+        if ($this->isCompilationNeeded($sourcePath)) {
+            $compiledCssCode = $this->compile($sourcePath);
             
             if (!file_put_contents($cssPath, $compiledCssCode, LOCK_EX)) {
                 throw new CException('Can not write to the file: ' . $cssPath);
@@ -189,6 +177,34 @@ class SassHandler extends CApplicationComponent
             $this->saveParsedFilesInfoToCache($sourcePath);
         }
         return $cssPath;
+    }
+
+    /**
+     * Compile .scss file
+     * 
+     * @param string $sourcePath
+     * @throws CException
+     * @return string Compiled CSS code
+     */
+    public function compile($sourcePath)
+    {
+        if ($this->autoAddImportPath) {
+            $originalImportPaths = $this->compiler->getImportPaths();
+            $this->compiler->addImportPath(dirname($sourcePath));
+        }
+        
+        $sourceCode = file_get_contents($sourcePath);
+        if ($sourceCode === false) {
+            throw new CException('Can not read from the file: ' . $sourcePath);
+        }
+        
+        $compiledCssCode = $this->compiler->compile($sourceCode);
+
+        if ($this->autoAddImportPath) {
+            $this->compiler->setImportPaths($originalImportPaths);
+        }
+        
+        return $compiledCssCode;
     }
     
     /**
@@ -244,12 +260,12 @@ class SassHandler extends CApplicationComponent
     }
     
     /**
-     * Is source .scss file needs to be recompiled
+     * Is source .scss file needs to be compiled/recompiled
      * 
      * @param string $path Path to the source .scss file
      * @return boolean
      */
-    protected function isRecompilationNeeded($path)
+    protected function isCompilationNeeded($path)
     {
         if ($this->forceCompile) {
             return true;
@@ -259,19 +275,22 @@ class SassHandler extends CApplicationComponent
             return true;
         }
         
-        if ($this->allowOverwrite) {
-            $compiledFiles = $this->cacheGet($this->getCacheCompiledPrefix() . $path);
-            if ($compiledFiles && is_array($compiledFiles)) {
-                foreach ($compiledFiles as $compiledFile => $compiledTime) {
-                    if (filemtime($compiledFile) != $compiledTime) {
-                        return true;
-                    }
-                }
-            }
-            else {
+        if (!$this->allowOverwrite) {
+            return false;
+        }
+        
+        $compiledFiles = $this->cacheGet($this->getCacheCompiledPrefix() . $path);
+        
+        if (!$compiledFiles or !is_array($compiledFiles)) {
+            return true;
+        }
+        
+        foreach ($compiledFiles as $compiledFile => $previousModificationTime) {
+            if (filemtime($compiledFile) != $previousModificationTime) {
                 return true;
             }
         }
+        
         return false;
     }
     
