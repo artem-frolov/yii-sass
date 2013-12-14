@@ -32,7 +32,7 @@ class SassHandler extends CApplicationComponent
     public $compilerPath;
     
     /**
-     * Path and filename of scss.inc.php
+     * Path and filename of compass.inc.php
      * Defaults to relative location in Composer's vendor directory:
      * dirname(__FILE__) . "/../../leafo/scssphp-compass/compass.inc.php" 
      * 
@@ -43,6 +43,7 @@ class SassHandler extends CApplicationComponent
     /**
      * Enable Compass support.
      * Automatically add required import paths and functions.
+     * Defaults to true
      * 
      * @var boolean
      */
@@ -70,11 +71,11 @@ class SassHandler extends CApplicationComponent
      * 
      * @var boolean
      */
-    public $forceCompile = false;
+    public $forceCompilation = false;
     
     /**
      * Turn on/off overwriting of already compiled CSS files.
-     * Will be ignored if $this->forceCompile is true.
+     * Will be ignored if $this->forceCompilation is true.
      * 
      * True value means that compiled CSS file will be overwriten
      * if the source SCSS file or related imported files have
@@ -102,6 +103,7 @@ class SassHandler extends CApplicationComponent
      * List of import paths.
      * Can be strings or callable functions:
      * function($searchPath) {return $targetPath;}
+     * Defaults to empty array
      * 
      * @var array
      */
@@ -218,7 +220,7 @@ class SassHandler extends CApplicationComponent
     
     /**
      * Get compiler
-     * Loads required file on initial request
+     * Loads required files on initial request
      * 
      * @return ExtendedScssc
      */
@@ -310,7 +312,7 @@ class SassHandler extends CApplicationComponent
      */
     protected function isCompilationNeeded($path)
     {
-        if ($this->forceCompile) {
+        if ($this->forceCompilation) {
             return true;
         }
         

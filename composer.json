@@ -1,7 +1,7 @@
 {
     "name": "artem-frolov/yii-sass",
     "type": "library",
-    "description": "SASS and Compass support for the Yii framework",
+    "description": "Sass (SCSS) and Compass support for the Yii framework",
     "keywords": ["yii","sass","compass","scss","css"],
     "homepage": "https://github.com/artem-frolov/yii-sass",
     "license": "MIT",
