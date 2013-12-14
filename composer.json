@@ -15,6 +15,7 @@
     ],
     "require": {
         "php": ">=5.1.0",
+        "leafo/scssphp": "dev-master",
         "leafo/scssphp-compass": "dev-master"
     },
     "autoload": {

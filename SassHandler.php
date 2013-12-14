@@ -6,7 +6,7 @@
  * Compiles .scss file(s) on-the-fly
  * and publishes and/or registers output .css file
  *
- * @property scssc $compiler
+ * @property ExtendedScssc $compiler
  * 
  * @author Artem Frolov <artem@frolov.net>
  * @link https://github.com/artem-frolov/yii-sass
@@ -30,6 +30,23 @@ class SassHandler extends CApplicationComponent
      * @var string
      */
     public $compilerPath;
+    
+    /**
+     * Path and filename of scss.inc.php
+     * Defaults to relative location in Composer's vendor directory:
+     * dirname(__FILE__) . "/../../leafo/scssphp-compass/compass.inc.php" 
+     * 
+     * @var string
+     */
+    public $compassPath;
+    
+    /**
+     * Enable Compass support.
+     * Automatically add required import paths and functions.
+     * 
+     * @var boolean
+     */
+    public $enableCompass = true;
     
     /**
      * Path to the directory with compiled CSS files.
@@ -94,7 +111,7 @@ class SassHandler extends CApplicationComponent
     /**
      * Compiler object
      * 
-     * @var scssc
+     * @var ExtendedScssc
      */
     protected $scssc;
 
@@ -105,6 +122,10 @@ class SassHandler extends CApplicationComponent
     {
         if (!$this->compilerPath) {
             $this->compilerPath = dirname(__FILE__) . '/../../leafo/scssphp/scss.inc.php';
+        }
+
+        if (!$this->compassPath) {
+            $this->compassPath = dirname(__FILE__) . "/../../leafo/scssphp-compass/compass.inc.php";
         }
         
         parent::init();
@@ -146,7 +167,7 @@ class SassHandler extends CApplicationComponent
         $cssPath = $this->getCompiledCssFilePath($sourcePath);
         if ($this->isRecompilationNeeded($sourcePath)) {
             if ($this->autoAddImportPath) {
-                $this->compiler->setImportPaths(array());
+                $originalImportPaths = $this->compiler->getImportPaths();
                 $this->compiler->addImportPath(dirname($sourcePath));
             }
             
@@ -156,17 +177,16 @@ class SassHandler extends CApplicationComponent
             }
             
             $compiledCssCode = $this->compiler->compile($sourceCode);
+
+            if ($this->autoAddImportPath) {
+                $this->compiler->setImportPaths($originalImportPaths);
+            }
+            
             if (!file_put_contents($cssPath, $compiledCssCode, LOCK_EX)) {
                 throw new CException('Can not write to the file: ' . $cssPath);
             }
             
-            $parsedFiles = $this->compiler->getParsedFiles();
-            $parsedFiles[] = $cssPath;
-            foreach ($parsedFiles as $file) {
-                $parsedFilesWithTime[$file] = filemtime($file);
-            }
-            
-            $this->cacheSet($this->getCacheCompiledPrefix() . $sourcePath, $parsedFilesWithTime);
+            $this->saveParsedFilesInfoToCache($sourcePath);
         }
         return $cssPath;
     }
@@ -175,15 +195,41 @@ class SassHandler extends CApplicationComponent
      * Get compiler
      * Loads required file on initial request
      * 
-     * @return scssc
+     * @return ExtendedScssc
      */
     public function getCompiler()
     {
         if (!$this->scssc) {
-            require_once $this->compilerPath;
-            $this->scssc = new scssc();
+            if (is_readable($this->compilerPath)) {
+                require_once $this->compilerPath;
+            }
+            require_once dirname(__FILE__) . '/ExtendedScssc.php';
+            $this->scssc = new ExtendedScssc();
+            if ($this->enableCompass) {
+                if (is_readable($this->compassPath)) {
+                    require_once $this->compassPath;
+                }
+                new scss_compass($this->scssc);
+            }
         }
         return $this->scssc;
+    }
+    
+    /**
+     * Save list of parsed files with the time files were last modified to the cache
+     * Must be called right after the compilation.
+     * 
+     * @param string $sourcePath Path to the source .scss file
+     */
+    protected function saveParsedFilesInfoToCache($sourcePath)
+    {
+        $parsedFiles = $this->compiler->getParsedFiles();
+        $parsedFiles[] = $sourcePath;
+        foreach ($parsedFiles as $file) {
+            $parsedFilesWithTime[$file] = filemtime($file);
+        }
+        
+        $this->cacheSet($this->getCacheCompiledPrefix() . $sourcePath, $parsedFilesWithTime);
     }
     
     /**
