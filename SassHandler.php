@@ -3,7 +3,7 @@
 /**
  * Sass Handler
  *
- * Compiles .scss file(s) on-the-fly
+ * Compiles SCSS file(s) on-the-fly
  * and publishes and/or registers output .css file
  *
  * @property ExtendedScssc $compiler
@@ -63,7 +63,7 @@ class SassHandler extends CApplicationComponent
      * Force compilation/recompilation on each request.
      * 
      * False value means that compilation will be done only if 
-     * source .scss file or related imported files have been
+     * source SCSS file or related imported files have been
      * changed after previous compilation.
      * 
      * Defaults to false
@@ -77,7 +77,7 @@ class SassHandler extends CApplicationComponent
      * Will be ignored if $this->forceCompile is true.
      * 
      * True value means that compiled CSS file will be overwriten
-     * if the source .scss file or related imported files have
+     * if the source SCSS file or related imported files have
      * been changed after previous compilation.
      * 
      * False value means that compilation will be done only if
@@ -142,9 +142,9 @@ class SassHandler extends CApplicationComponent
     
     /**
      * Publish and register compiled CSS file.
-     * Compile/recompile source .scss file if needed
+     * Compile/recompile source SCSS file if needed
      * 
-     * @param string $sourcePath Path to the source .scss file
+     * @param string $sourcePath Path to the source SCSS file
      * @param string $media Media that the CSS file should be applied to. If empty, it means all media types.
      */
     public function register($sourcePath, $media = '')
@@ -155,9 +155,9 @@ class SassHandler extends CApplicationComponent
 
     /**
      * Publish compiled CSS file.
-     * Compile/recompile source .scss file if needed
+     * Compile/recompile source SCSS file if needed
      * 
-     * @param string $sourcePath Path to the source .scss file
+     * @param string $sourcePath Path to the source SCSS file
      * @return string Path to the published CSS file
      */
     public function publish($sourcePath)
@@ -169,7 +169,7 @@ class SassHandler extends CApplicationComponent
     /**
      * Get path to the compiled CSS file, compile/recompile source file if needed
      * 
-     * @param string $sourcePath Path to the source .scss file
+     * @param string $sourcePath Path to the source SCSS file
      * @throws CException
      * @return string
      */
@@ -189,7 +189,7 @@ class SassHandler extends CApplicationComponent
     }
 
     /**
-     * Compile .scss file
+     * Compile SCSS file
      * 
      * @param string $sourcePath
      * @throws CException
@@ -271,7 +271,7 @@ class SassHandler extends CApplicationComponent
      * Save list of parsed files with the time files were last modified to the cache
      * Must be called right after the compilation.
      * 
-     * @param string $sourcePath Path to the source .scss file
+     * @param string $sourcePath Path to the source SCSS file
      */
     protected function saveParsedFilesInfoToCache($sourcePath)
     {
@@ -281,13 +281,20 @@ class SassHandler extends CApplicationComponent
             $parsedFilesWithTime[$file] = filemtime($file);
         }
         
-        $this->cacheSet($this->getCacheCompiledPrefix() . $sourcePath, $parsedFilesWithTime);
+        $info = array(
+            'compiledFiles' => $parsedFilesWithTime,
+            'autoAddCurrentDirectoryAsImportPath' => $this->autoAddCurrentDirectoryAsImportPath,
+            'enableCompass' => $this->enableCompass,
+            'importPaths' => $this->compiler->getImportPaths(),
+        );
+        
+        $this->cacheSet($this->getCacheCompiledPrefix() . $sourcePath, $info);
     }
     
     /**
      * Get path to the compiled CSS file
      * 
-     * @param string $sourcePath Path to the source .scss file
+     * @param string $sourcePath Path to the source SCSS file
      * @return string
      */
     protected function getCompiledCssFilePath($sourcePath)
@@ -296,9 +303,9 @@ class SassHandler extends CApplicationComponent
     }
     
     /**
-     * Is source .scss file needs to be compiled/recompiled
+     * Is source SCSS file needs to be compiled/recompiled
      * 
-     * @param string $path Path to the source .scss file
+     * @param string $path Path to the source SCSS file
      * @return boolean
      */
     protected function isCompilationNeeded($path)
@@ -315,13 +322,44 @@ class SassHandler extends CApplicationComponent
             return false;
         }
         
-        $compiledFiles = $this->cacheGet($this->getCacheCompiledPrefix() . $path);
-        
-        if (!$compiledFiles or !is_array($compiledFiles)) {
+        if ($this->isLastCompilationEnvironmentChanged($path)) {
             return true;
         }
         
-        foreach ($compiledFiles as $compiledFile => $previousModificationTime) {
+        return false;
+    }
+    
+    /**
+     * Is last compilation environment changed for specified SCSS file.
+     * Check component's settings and modification time of imported files.
+     * 
+     * @param string $path Path to the source SCSS file 
+     * @return boolean
+     */
+    protected function isLastCompilationEnvironmentChanged($path)
+    {
+        $compiledInfo = $this->cacheGet($this->getCacheCompiledPrefix() . $path);
+        
+        if (!isset($compiledInfo['autoAddCurrentDirectoryAsImportPath']) or
+            $compiledInfo['autoAddCurrentDirectoryAsImportPath'] !== $this->autoAddCurrentDirectoryAsImportPath) {
+            return true;
+        }
+        
+        if (!isset($compiledInfo['enableCompass']) or
+            $compiledInfo['enableCompass'] !== $this->enableCompass) {
+            return true;
+        }
+        
+        if (!isset($compiledInfo['importPaths']) or
+            $compiledInfo['importPaths'] !== $this->compiler->getImportPaths()) {
+            return true;
+        }
+        
+        if (empty($compiledInfo['compiledFiles']) or !is_array($compiledInfo['compiledFiles'])) {
+            return true;
+        }
+        
+        foreach ($compiledInfo['compiledFiles'] as $compiledFile => $previousModificationTime) {
             if (filemtime($compiledFile) != $previousModificationTime) {
                 return true;
             }
