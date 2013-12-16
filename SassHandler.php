@@ -43,11 +43,11 @@ class SassHandler extends CApplicationComponent
     /**
      * Enable Compass support.
      * Automatically add required import paths and functions.
-     * Defaults to true
+     * Defaults to false
      * 
      * @var boolean
      */
-    public $enableCompass = true;
+    public $enableCompass = false;
     
     /**
      * Path to the directory with compiled CSS files.

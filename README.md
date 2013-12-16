@@ -60,6 +60,9 @@ Required libraries will be installed automatically.
         
         // Use the following if you use Composer's autoloader
         //'class' => 'SassHandler',
+	    
+	    // Enable Compass support, defaults to false
+	    'enableCompass' => true,
     ),
     ...
 ),
@@ -88,6 +91,9 @@ Put it somewhere within your application directory, e.g. to "protected/vendor/sc
         // Path and filename of compass.inc.php
         // Required only if Compass support is required
         'compassPath' => dirname(__FILE__) . '/../../vendor/scssphp-compass/compass.inc.php',
+	    
+	    // Enable Compass support, defaults to false
+	    'enableCompass' => true,
     ),
     ...
 ),
@@ -127,8 +133,8 @@ All options below are optional except the "class" item.
 	    
 	    // Enable Compass support.
 	    // Automatically add required import paths and functions.
-		// Defaults to true
-	    'enableCompass' => true,
+		// Defaults to false
+	    'enableCompass' => false,
 	    
 	    // Path to the directory with compiled CSS files.
 	    // Will be created automatically if doesn't exist.
