@@ -34,70 +34,80 @@ Installation can be done using
 or manually by downloading required files.
 
 ### Install using [Composer](http://getcomposer.org/doc/00-intro.md "Introduction to Composer")
-1. Install **[artem-frolov/yii-sass](https://packagist.org/packages/artem-frolov/yii-sass "artem-frolov/yii-sass Composer package on Packagist.org")**
-package from Packagist.  
-Execute in your application's directory:
-```
-composer require artem-frolov/yii-sass dev-master
-```  
-Required libraries will be installed automatically.
-2. Update your application's configuration *(e.g. protected/config/main.php)* like this:
+1.  Allow installation of development versions of Composer packages  
+    Required ["leafo/scssphp-compass" Composer package](https://packagist.org/packages/leafo/scssphp-compass "leafo/scssphp-compass Composer package on Packagist")
+    doesn't have a stable version.  
+    So you need to do one of the following:
+    -   Add `"minimum-stability": "dev"` to your `composer.json` file
+    -   **OR** add the following 2 lines to your `require` section of the `composer.json`:  
+        `"leafo/scssphp": "dev-master@dev",`  
+        `"leafo/scssphp-compass": "dev-master@dev"`
 
-```php
-'aliases' => array(
-    ...
-    // Path to your Composer's "vendor" directory
-    // You need this only if you don't use Composer's autoloader
-    'vendor' => dirname(__FILE__) . '/../../../vendor',
-),
-...
-'components' => array(
-    ...
-    'sass' => array(
-        // Path to the SassHandler class
-        // You need the full path only if you don't use Composer's autoloader
-        'class' => 'vendor.artem-frolov.yii-sass.SassHandler',
-        
-        // Use the following if you use Composer's autoloader
-        //'class' => 'SassHandler',
-	    
-	    // Enable Compass support, defaults to false
-	    'enableCompass' => true,
+2.  Install **[artem-frolov/yii-sass](https://packagist.org/packages/artem-frolov/yii-sass "artem-frolov/yii-sass Composer package on Packagist.org")**
+    package from Packagist.
+    Required libraries will be installed automatically.  
+    Execute in your application's directory:
+    ```
+    composer require artem-frolov/yii-sass "1.*"
+    ```  
+3.  Update your application's configuration *(e.g. protected/config/main.php)* like this:
+    
+    ```php
+    'aliases' => array(
+        ...
+        // Path to your Composer's "vendor" directory
+        // You need this only if you don't use Composer's autoloader
+        'vendor' => dirname(__FILE__) . '/../../../vendor',
     ),
     ...
-),
-```
+    'components' => array(
+        ...
+        'sass' => array(
+	        // Path to the SassHandler class
+	        // You need the full path only if you don't use Composer's autoloader
+	        'class' => 'vendor.artem-frolov.yii-sass.SassHandler',
+	        
+	        // Use the following if you use Composer's autoloader
+	        //'class' => 'SassHandler',
+		    
+		    // Enable Compass support, defaults to false
+		    'enableCompass' => true,
+	    ),
+	    ...
+	),
+	```
 
 ### Install manually
-1. [Download yii-sass extension](https://github.com/artem-frolov/yii-sass/archive/master.zip "Download yii-sass extension from Github")  
-Put it to the "protected/extensions/yii-sass" directory so the path to the SassHandler.php
-will look like "protected/extensions/yii-sass/SassHandler.php"
-2. [Download scssphp compiler](https://github.com/leafo/scssphp/archive/master.zip "Download scssphp compiler from Github")  
-Put it somewhere within your application directory, e.g. to "protected/vendor/scssphp" directory
-2. [Download scssphp-compass library](https://github.com/leafo/scssphp-compass/archive/master.zip "Download scssphp-compass library from Github")  
-Put it somewhere within your application directory, e.g. to "protected/vendor/scssphp-compass" directory
-3. Update your application's configuration *(e.g. protected/config/main.php)* like this:
-
-```php
-'components' => array(
-    ...
-    'sass' => array(
-        // Path to the SassHandler class
-        'class' => 'ext.yii-sass.SassHandler',
-        
-        // Path and filename of scss.inc.php
-        'compilerPath' => dirname(__FILE__) . '/../../vendor/scssphp/scss.inc.php',
-        
-        // Path and filename of compass.inc.php
-        // Required only if Compass support is required
-        'compassPath' => dirname(__FILE__) . '/../../vendor/scssphp-compass/compass.inc.php',
-	    
-	    // Enable Compass support, defaults to false
-	    'enableCompass' => true,
-    ),
-    ...
-),
-```
+1.  [Download yii-sass extension](https://github.com/artem-frolov/yii-sass/archive/master.zip "Download yii-sass extension from Github")  
+	Put files to the "protected/extensions/yii-sass" directory so the path to the SassHandler.php
+	will look like "protected/extensions/yii-sass/SassHandler.php"
+2.  [Download scssphp compiler](https://github.com/leafo/scssphp/archive/master.zip "Download scssphp compiler from Github")  
+	Put files somewhere within your application directory, e.g. to "protected/vendor/scssphp" directory
+3.  [Download scssphp-compass library](https://github.com/leafo/scssphp-compass/archive/master.zip "Download scssphp-compass library from Github")  
+	*Skip this step if you don't need Compass support*  
+	Put files somewhere within your application directory, e.g. to "protected/vendor/scssphp-compass" directory
+4.  Update your application's configuration *(e.g. protected/config/main.php)* like this:
+	
+	```php
+	'components' => array(
+	    ...
+	    'sass' => array(
+	        // Path to the SassHandler class
+	        'class' => 'ext.yii-sass.SassHandler',
+	        
+	        // Path and filename of scss.inc.php
+	        'compilerPath' => dirname(__FILE__) . '/../../vendor/scssphp/scss.inc.php',
+	        
+	        // Path and filename of compass.inc.php
+	        // Required only if Compass support is required
+	        'compassPath' => dirname(__FILE__) . '/../../vendor/scssphp-compass/compass.inc.php',
+		    
+		    // Enable Compass support, defaults to false
+		    'enableCompass' => true,
+	    ),
+	    ...
+	),
+	```
 
 Usage
 --------
