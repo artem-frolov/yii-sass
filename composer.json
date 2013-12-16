@@ -19,8 +19,9 @@
         "leafo/scssphp-compass": "dev-master"
     },
     "autoload": {
-        "psr-0": {
-            "SassHandler": ""
-        }
+        "classmap": [
+            "SassHandler.php",
+            "ExtendedScssc.php"
+        ]
     }
 }
