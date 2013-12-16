@@ -23,6 +23,7 @@ This extension caches compiled CSS code and prevents recompilation if there is n
 Requirements
 --------
 * PHP >= 5.1
+* Yii 1.0 or 1.1
 * [scssphp compiler](http://leafo.net/scssphp/)
 * [scssphp-compass library](https://github.com/leafo/scssphp-compass) -
 *only if Compass support is needed*
@@ -56,58 +57,58 @@ or manually by downloading required files.
     'aliases' => array(
         ...
         // Path to your Composer's "vendor" directory
-        // You need this only if you don't use Composer's autoloader
+        // You can remove this if you use Composer's autoloader and Yii >= 1.1.15
         'vendor' => dirname(__FILE__) . '/../../../vendor',
     ),
     ...
     'components' => array(
         ...
         'sass' => array(
-	        // Path to the SassHandler class
-	        // You need the full path only if you don't use Composer's autoloader
-	        'class' => 'vendor.artem-frolov.yii-sass.SassHandler',
-	        
-	        // Use the following if you use Composer's autoloader
-	        //'class' => 'SassHandler',
-		    
-		    // Enable Compass support, defaults to false
-		    'enableCompass' => true,
-	    ),
-	    ...
-	),
-	```
+            // Path to the SassHandler class
+            // You need the full path only if you don't use Composer's autoloader
+            'class' => 'vendor.artem-frolov.yii-sass.SassHandler',
+            
+            // Use the following if you use Composer's autoloader and Yii >= 1.1.15
+            //'class' => 'SassHandler',
+            
+            // Enable Compass support, defaults to false
+            'enableCompass' => true,
+        ),
+        ...
+    ),
+    ```
 
 ### Install manually
 1.  [Download yii-sass extension](https://github.com/artem-frolov/yii-sass/archive/master.zip "Download yii-sass extension from Github")  
-	Put files to the "protected/extensions/yii-sass" directory so the path to the SassHandler.php
-	will look like "protected/extensions/yii-sass/SassHandler.php"
+    Put files to the "protected/extensions/yii-sass" directory so the path to the SassHandler.php
+    will look like "protected/extensions/yii-sass/SassHandler.php"
 2.  [Download scssphp compiler](https://github.com/leafo/scssphp/archive/master.zip "Download scssphp compiler from Github")  
-	Put files somewhere within your application directory, e.g. to "protected/vendor/scssphp" directory
+    Put files to the "protected/vendor/scssphp" directory
 3.  [Download scssphp-compass library](https://github.com/leafo/scssphp-compass/archive/master.zip "Download scssphp-compass library from Github")  
-	*Skip this step if you don't need Compass support*  
-	Put files somewhere within your application directory, e.g. to "protected/vendor/scssphp-compass" directory
+    *Skip this step if you don't need Compass support*  
+    Put files to the "protected/vendor/scssphp-compass" directory
 4.  Update your application's configuration *(e.g. protected/config/main.php)* like this:
-	
-	```php
-	'components' => array(
-	    ...
-	    'sass' => array(
-	        // Path to the SassHandler class
-	        'class' => 'ext.yii-sass.SassHandler',
-	        
-	        // Path and filename of scss.inc.php
-	        'compilerPath' => dirname(__FILE__) . '/../../vendor/scssphp/scss.inc.php',
-	        
-	        // Path and filename of compass.inc.php
-	        // Required only if Compass support is required
-	        'compassPath' => dirname(__FILE__) . '/../../vendor/scssphp-compass/compass.inc.php',
-		    
-		    // Enable Compass support, defaults to false
-		    'enableCompass' => true,
-	    ),
-	    ...
-	),
-	```
+    
+    ```php
+    'components' => array(
+        ...
+        'sass' => array(
+            // Path to the SassHandler class
+            'class' => 'ext.yii-sass.SassHandler',
+            
+            // Path and filename of scss.inc.php
+            'compilerPath' => dirname(__FILE__) . '/../vendor/scssphp/scss.inc.php',
+            
+            // Path and filename of compass.inc.php
+            // Required only if Compass support is required
+            'compassPath' => dirname(__FILE__) . '/../vendor/scssphp-compass/compass.inc.php',
+            
+            // Enable Compass support, defaults to false
+            'enableCompass' => true,
+        ),
+        ...
+    ),
+    ```
 
 Usage
 --------
@@ -137,55 +138,55 @@ All options below are optional except the "class" item.
         'compassPath' => dirname(__FILE__) . '/../../../vendor/scssphp-compass/compass.inc.php',
 
         // Path for cache files. Will be used if Yii caching is not enabled.
-     	// Yii aliases can be used.
-     	// Defaults to 'application.runtime.sass-cache'
-		'cachePath' => 'application.runtime.sass-cache',
-	    
-	    // Enable Compass support.
-	    // Automatically add required import paths and functions.
-		// Defaults to false
-	    'enableCompass' => false,
-	    
-	    // Path to the directory with compiled CSS files.
-	    // Will be created automatically if doesn't exist.
-	    // Will be chmod'ed if it's not writable by script.
-	    // Yii aliases can be used.
-	    // Defaults to 'application.runtime.sass-compiled'
-	    'sassCompiledPath' => 'application.runtime.sass-compiled',
-	    
-	    // Force compilation/recompilation on each request.
-	    // False value means that compilation will be done only if 
-	    // source SCSS file or related imported files have been
-	    // changed after previous compilation.
-	    // Defaults to false
-	    'forceCompilation' => false,
-	    
-	    // Turn on/off overwriting of already compiled CSS files.
-	    // Will be ignored if $this->forceCompilation is true.
-	    // True value means that compiled CSS file will be overwriten
-	    // if the source SCSS file or related imported files have
-	    // been changed after previous compilation.
-	    // False value means that compilation will be done only if
-	    // output CSS file doesn't exist.
-	    // Defaults to true
-	    'allowOverwrite' => true,
-	    
-	    // Automatically add directory containing SCSS file being processed
-	    // as an import path for the @import Sass directive.
-	    // Defaults to true
-	    'autoAddCurrentDirectoryAsImportPath' => true,
-	    
-	    // List of import paths.
-	    // Can be strings or callable functions:
-	    // function($searchPath) {return $targetPath;}
-	    // Defaults to empty array
-	    'importPaths' => array(),
-	    
-	    // Chmod permissions used for creating/updating of writable
-	    // directories for cache files and compiled CSS files.
-	    // Mind the leading zero for octal values.
-	    // Defaults to 0644
-	    'writableDirectoryPermissions' => 0644,
+         // Yii aliases can be used.
+         // Defaults to 'application.runtime.sass-cache'
+        'cachePath' => 'application.runtime.sass-cache',
+        
+        // Enable Compass support.
+        // Automatically add required import paths and functions.
+        // Defaults to false
+        'enableCompass' => false,
+        
+        // Path to the directory with compiled CSS files.
+        // Will be created automatically if doesn't exist.
+        // Will be chmod'ed if it's not writable by script.
+        // Yii aliases can be used.
+        // Defaults to 'application.runtime.sass-compiled'
+        'sassCompiledPath' => 'application.runtime.sass-compiled',
+        
+        // Force compilation/recompilation on each request.
+        // False value means that compilation will be done only if 
+        // source SCSS file or related imported files have been
+        // changed after previous compilation.
+        // Defaults to false
+        'forceCompilation' => false,
+        
+        // Turn on/off overwriting of already compiled CSS files.
+        // Will be ignored if $this->forceCompilation is true.
+        // True value means that compiled CSS file will be overwriten
+        // if the source SCSS file or related imported files have
+        // been changed after previous compilation.
+        // False value means that compilation will be done only if
+        // output CSS file doesn't exist.
+        // Defaults to true
+        'allowOverwrite' => true,
+        
+        // Automatically add directory containing SCSS file being processed
+        // as an import path for the @import Sass directive.
+        // Defaults to true
+        'autoAddCurrentDirectoryAsImportPath' => true,
+        
+        // List of import paths.
+        // Can be strings or callable functions:
+        // function($searchPath) {return $targetPath;}
+        // Defaults to empty array
+        'importPaths' => array(),
+        
+        // Chmod permissions used for creating/updating of writable
+        // directories for cache files and compiled CSS files.
+        // Mind the leading zero for octal values.
+        // Defaults to 0644
+        'writableDirectoryPermissions' => 0644,
     ),
     ...
 ),
