@@ -17,3 +17,7 @@ nbproject
 # mac deployment helpers
 switch
 index
+
+vendor
+.README.md.html
+composer.lock
