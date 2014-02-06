@@ -113,11 +113,11 @@ class SassHandler extends CApplicationComponent
      * Chmod permissions used for creating/updating of writable
      * directories for cache files and compiled CSS files.
      * Mind the leading zero for octal values.
-     * Defaults to 0644
+     * Defaults to 0777
      * 
      * @var integer
      */
-    public $writableDirectoryPermissions = 0644;
+    public $writableDirectoryPermissions = 0777;
 
     /**
      * Customize the formatting of the output CSS.

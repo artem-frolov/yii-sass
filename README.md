@@ -185,8 +185,8 @@ All options below are optional except the "class" item.
         // Chmod permissions used for creating/updating of writable
         // directories for cache files and compiled CSS files.
         // Mind the leading zero for octal values.
-        // Defaults to 0644
-        'writableDirectoryPermissions' => 0644,
+        // Defaults to 0777
+        'writableDirectoryPermissions' => 0777,
         
         // Customize the formatting of the output CSS.
         // Possible values are 'simple', 'nested', 'compressed'
