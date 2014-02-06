@@ -203,22 +203,62 @@ Component methods
 ```php
 /**
  * Publish and register compiled CSS file.
- * Compile/recompile source SCSS file if needed
+ * Compile/recompile source SCSS file if needed.
+ * 
+ * Optionally can publish compiled CSS file inside specific published directory.
+ * It's helpful when CSS code has relative references to other
+ * resources (images/fonts) and when these resources are also published
+ * using Yii asset manager. This method allows to publish compiled CSS files
+ * along with other resources to make relative references work.
+ * 
+ * E.g.:
+ * "image.jpg" is stored inside path alias "application.files.images"
+ * Somewhere in the code the following is called during page generation:
+ * Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.files'));
+ * SCSS file has the following code: background-image: url(../images/image.jpg);
+ * Then the correct call of the method will be:
+ * Yii::app()->sass->register('path-to-scss-file.scss', '', 'application.files', 'css_compiled');
  * 
  * @param string $sourcePath Path to the source SCSS file
- * @param string $media Media that the CSS file should be applied to. If empty, it means all media types.
+ * @param string $media Media that the CSS file should be applied to. If empty, it means all media types
+ * @param string $insidePublishedDirectory Path to the directory with resource files
+ * which is published somewhere in the application explicitly.
+ * Default is null which means that CSS file will be published separately.
+ * @param string $subDirectory Subdirectory for the CSS file within publicly available location. Default is null
+ * @param boolean $hashByName Must be the same as in the CAssetManager::publish() call
+ * for $insidePublishedDirectory. See CAssetManager::publish() for details. Default is false.
  */
-Yii::app()->sass->register($sourcePath, $media = '');
+Yii::app()->sass->register($sourcePath, $media = '', $insidePublishedDirectory = null, $subDirectory = null, $hashByName = false);
 
 
 /**
  * Publish compiled CSS file.
- * Compile/recompile source SCSS file if needed
+ * Compile/recompile source SCSS file if needed.
+ * 
+ * Optionally can publish compiled CSS file inside specific published directory.
+ * It's helpful when CSS code has relative references to other
+ * resources (images/fonts) and when these resources are also published
+ * using Yii asset manager. This method allows to publish compiled CSS files
+ * along with other resources to make relative references work.
+ * 
+ * E.g.:
+ * "image.jpg" is stored inside path alias "application.files.images"
+ * Somewhere in the code the following is called during page generation:
+ * Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.files'));
+ * SCSS file has the following code: background-image: url(../images/image.jpg);
+ * Then the correct call of the method will be:
+ * Yii::app()->sass->publish('path-to-scss-file.scss', 'application.files', 'css_compiled');
  * 
  * @param string $sourcePath Path to the source SCSS file
- * @return string Path to the published CSS file
+ * @param string $insidePublishedDirectory Path to the directory with resource files
+ * which is published somewhere in the application explicitly.
+ * Default is null which means that CSS file will be published separately.
+ * @param string $subDirectory Subdirectory for the CSS file within publicly available location. Default is null
+ * @param boolean $hashByName Must be the same as in the CAssetManager::publish() call
+ * for $insidePublishedDirectory. See CAssetManager::publish() for details. Default is false.
+ * @return string URL of the published CSS file
  */
-Yii::app()->sass->publish($sourcePath);
+Yii::app()->sass->publish($sourcePath, $insidePublishedDirectory = null, $subDirectory = null, $hashByName = false);
 
 
 /**
