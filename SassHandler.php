@@ -264,7 +264,8 @@ class SassHandler extends CApplicationComponent
      * @param ExtendedScssc $compiler
      * @throws CException
      */
-    protected function setupOutputFormatting($compiler) {
+    protected function setupOutputFormatting($compiler)
+    {
         $formatters = array(
             self::OUTPUT_FORMATTING_SIMPLE => 'scss_formatter',
             self::OUTPUT_FORMATTING_NESTED => 'scss_formatter_nested',
@@ -294,8 +295,7 @@ class SassHandler extends CApplicationComponent
             $preparedPath = YiiBase::getPathOfAlias($originalPath);
             if ($preparedPath !== false) {
                 $preparedPaths[] = $preparedPath;
-            }
-            else {
+            } else {
                 $preparedPaths[] = $originalPath;
             }
         }
