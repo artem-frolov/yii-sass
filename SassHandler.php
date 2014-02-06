@@ -343,7 +343,7 @@ class SassHandler extends CApplicationComponent
     	}
     	
     	return Yii::app()->assetManager->getPublishedUrl($insidePublishedDirectoryRealPath) .
-    		$subDirectoryUrlSection . $basename;
+    		'/' . $subDirectoryUrlSection . $basename;
     }
 
     /**
