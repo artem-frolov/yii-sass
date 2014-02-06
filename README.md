@@ -135,7 +135,7 @@ All options below are optional except the "class" item.
         // Path and filename of compass.inc.php
         // Required only if Compass support is required
         // Defaults to relative location in Composer's vendor directory
-        'compassPath' => dirname(__FILE__) . '/../../../vendor/scssphp-compass/compass.inc.php',
+        'compassPath' => dirname(__FILE__) . '/../../../vendor/leafo/scssphp-compass/compass.inc.php',
 
         // Path for cache files. Will be used if Yii caching is not enabled.
          // Yii aliases can be used.
