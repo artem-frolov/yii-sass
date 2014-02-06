@@ -187,6 +187,12 @@ All options below are optional except the "class" item.
         // Mind the leading zero for octal values.
         // Defaults to 0644
         'writableDirectoryPermissions' => 0644,
+        
+        // Customize the formatting of the output CSS.
+        // Possible values are 'simple', 'nested', 'compressed'
+        // @see http://leafo.net/scssphp/docs/#output_formatting
+        // Default is 'nested'
+        'compilerOutputFormatting' => 'nested',
     ),
     ...
 ),

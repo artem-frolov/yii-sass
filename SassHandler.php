@@ -118,7 +118,22 @@ class SassHandler extends CApplicationComponent
      * @var integer
      */
     public $writableDirectoryPermissions = 0644;
-    
+
+    /**
+     * Customize the formatting of the output CSS.
+     * Possible values are 'simple', 'nested', 'compressed'
+     * @see http://leafo.net/scssphp/docs/#output_formatting
+     *
+     * Default is 'nested'
+     *
+     * @var string
+     */
+    public $compilerOutputFormatting = self::OUTPUT_FORMATTING_NESTED;
+
+    const OUTPUT_FORMATTING_NESTED = 'nested',
+          OUTPUT_FORMATTING_COMPRESSED = 'compressed',
+          OUTPUT_FORMATTING_SIMPLE = 'simple';
+
     /**
      * Compiler object
      * 
@@ -239,8 +254,27 @@ class SassHandler extends CApplicationComponent
                 }
                 new scss_compass($this->scssc);
             }
+            $this->setupOutputFormatting($this->scssc);
         }
         return $this->scssc;
+    }
+
+    /**
+     * Setup compiler output formatting
+     * @param ExtendedScssc $compiler
+     * @throws CException
+     */
+    protected function setupOutputFormatting($compiler) {
+        $formatters = array(
+            self::OUTPUT_FORMATTING_SIMPLE => 'scss_formatter',
+            self::OUTPUT_FORMATTING_NESTED => 'scss_formatter_nested',
+            self::OUTPUT_FORMATTING_COMPRESSED => 'scss_formatter_compressed',
+        );
+        if (isset($formatters[$this->compilerOutputFormatting])) {
+            $compiler->setFormatter($formatters[$this->compilerOutputFormatting]);
+        } else {
+            throw new CException('Unknown output formatting: ' . $this->compilerOutputFormatting);
+        }
     }
     
     /**
