@@ -338,8 +338,11 @@ class SassHandler extends CApplicationComponent
     	}
     	
     	$basename = basename($compiledFile);
-    	if (!copy($compiledFile, $targetPath . $basename)) {
-    		throw new CException('Can not copy "' . $compiledFile . '" to the "' . $targetPath . '" directory');
+    	$targetFile = $targetPath . $basename;
+    	if (!file_exists($targetFile) or filemtime($compiledFile) !== filemtime($targetFile)) {
+	    	if (!copy($compiledFile, $targetFile)) {
+	    		throw new CException('Can not copy "' . $compiledFile . '" to the "' . $targetPath . '" directory');
+	    	}
     	}
     	
     	return Yii::app()->assetManager->getPublishedUrl($insidePublishedDirectoryRealPath) .
