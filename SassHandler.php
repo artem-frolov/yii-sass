@@ -409,6 +409,7 @@ class SassHandler extends CApplicationComponent
             'autoAddCurrentDirectoryAsImportPath' => $this->autoAddCurrentDirectoryAsImportPath,
             'enableCompass' => $this->enableCompass,
             'importPaths' => $this->compiler->getImportPaths(),
+        	'compilerOutputFormatting' => $this->compilerOutputFormatting,
         );
         
         $this->cacheSet($this->getCacheCompiledPrefix() . $sourcePath, $info);
@@ -463,14 +464,16 @@ class SassHandler extends CApplicationComponent
     {
         $compiledInfo = $this->cacheGet($this->getCacheCompiledPrefix() . $path);
         
-        if (!isset($compiledInfo['autoAddCurrentDirectoryAsImportPath']) or
-            $compiledInfo['autoAddCurrentDirectoryAsImportPath'] !== $this->autoAddCurrentDirectoryAsImportPath) {
-            return true;
-        }
-        
-        if (!isset($compiledInfo['enableCompass']) or
-            $compiledInfo['enableCompass'] !== $this->enableCompass) {
-            return true;
+        $fieldsToCheckForChangedValue = array(
+            'autoAddCurrentDirectoryAsImportPath',
+            'enableCompass',
+            'compilerOutputFormatting',
+        );
+        foreach ($fieldsToCheckForChangedValue as $field) {
+	        if (!isset($compiledInfo[$field]) or
+	            $compiledInfo[$field] !== $this->$field) {
+	            return true;
+	        }
         }
         
         if (!isset($compiledInfo['importPaths']) or
