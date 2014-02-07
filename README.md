@@ -289,3 +289,26 @@ Yii::app()->sass->compile($sourcePath);
  */
 Yii::app()->sass->getCompiler();
 ```
+
+Changelog
+--------
+- **Version 1.1.0** — 2014-01-07
+    - Allow to register and publish compiled CSS files inside specific published
+      directory to allow using of relative references in CSS for images, fonts and
+      other published files
+    - Add `compilerOutputFormatting` component option, allow to switch between
+      `simple`, `nested` and `compressed` *(Pavel Volyntsev)*
+    - Change default value of the `writableDirectoryPermissions` component option
+      from `0644` to `0777`. It should prevent permission errors on some Linux servers
+    - Update code style and documentation
+    
+
+- **Version 1.0.0** — 2013-12-16
+    - Initial release
+
+Resources
+--------
+- [yii-sass extension page on the Yii framework website](http://www.yiiframework.com/extension/sass/)
+- [Forum support topic for yii-sass extension](http://www.yiiframework.com/forum/index.php/topic/49937-extension-yii-sass-sass-scss-and-compass-support/)
+- [yii-sass extension page on the Packagist](https://packagist.org/packages/artem-frolov/yii-sass)
+- [scssphp compiler](http://leafo.net/scssphp/)
