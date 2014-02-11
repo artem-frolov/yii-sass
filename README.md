@@ -292,7 +292,7 @@ Yii::app()->sass->getCompiler();
 
 Changelog
 --------
-- **Version 1.1.0** — 2014-01-07
+- **Version 1.1.0** — 2014-02-07
     - Allow to register and publish compiled CSS files inside specific published
       directory to allow using of relative references in CSS for images, fonts and
       other published files
