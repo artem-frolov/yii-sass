@@ -132,7 +132,8 @@ class SassHandler extends CApplicationComponent
 
     const OUTPUT_FORMATTING_NESTED = 'nested',
           OUTPUT_FORMATTING_COMPRESSED = 'compressed',
-          OUTPUT_FORMATTING_SIMPLE = 'simple';
+          OUTPUT_FORMATTING_CRUNCHED = 'crunched',
+          OUTPUT_FORMATTING_EXPANDED = 'expanded';
 
     /**
      * Compiler object
