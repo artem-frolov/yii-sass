@@ -2,15 +2,15 @@
 
 /**
  * Extended class for SCSS compiler
- * 
+ *
  * @author Artem Frolov <artem@frolov.net>
  * @link https://github.com/artem-frolov/yii-sass
  */
-class ExtendedScssc extends scssc
+class ExtendedScssc extends \Leafo\ScssPhp\Compiler
 {
     /**
      * Get list of current import paths
-     * 
+     *
      * @return array
      */
     public function getImportPaths()
