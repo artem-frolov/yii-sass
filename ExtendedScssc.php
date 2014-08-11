@@ -6,7 +6,7 @@
  * @author Artem Frolov <artem@frolov.net>
  * @link https://github.com/artem-frolov/yii-sass
  */
-class ExtendedScssc extends \Leafo\ScssPhp\Compiler
+class ExtendedScssc extends Leafo\ScssPhp\Compiler
 {
     /**
      * Get list of current import paths

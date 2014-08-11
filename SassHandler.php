@@ -358,9 +358,9 @@ class SassHandler extends CApplicationComponent
     {
         $formatters = array(
             self::OUTPUT_FORMATTING_NESTED => 'Leafo\ScssPhp\Formatter\Nested',
-            self::OUTPUT_FORMATTING_COMPRESSED => 'Leafo\ScssPhp\Formatter\Compressed',
-            self::OUTPUT_FORMATTING_EXPANDED => 'Leafo\ScssPhp\Formatter\Expanded',
-            self::OUTPUT_FORMATTING_CRUNCHED => 'Leafo\ScssPhp\Formatter\Crunched',
+			self::OUTPUT_FORMATTING_COMPRESSED => 'Leafo\ScssPhp\Formatter\Compressed',
+			self::OUTPUT_FORMATTING_EXPANDED => 'Leafo\ScssPhp\Formatter\Expanded',
+			self::OUTPUT_FORMATTING_CRUNCHED => 'Leafo\ScssPhp\Formatter\Crunched',
         );
         if (isset($formatters[$this->compilerOutputFormatting])) {
             $compiler->setFormatter($formatters[$this->compilerOutputFormatting]);
