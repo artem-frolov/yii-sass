@@ -310,6 +310,18 @@ vendor/bin/phpunit
 
 Changelog
 --------
+- **Version 1.2.0** — 2014-08-12
+    - Fix compatibility with the new ``0.1`` version of the
+      ``scssphp`` compiler *(alexdevid)*
+    - Set minimum required PHP version to 5.3 because the new version
+      of ``scssphp`` compiler requires it
+    - Add new formatting type ``SassHandler::OUTPUT_FORMATTING_CRUNCHED`` which
+      can be used with ``compilerOutputFormatting`` parameter *(alexdevid)*
+    - Add unit tests to check integration with ``scssphp`` compiler
+      and with ``scssphp-compass`` library
+    - Fix a bug: ``$hashByName=true`` argument wasn't properly passed to the Yii's asset manager
+    - Minor fixes and improvements
+
 - **Version 1.1.0** — 2014-02-07
     - Allow to register and publish compiled CSS files inside specific published
       directory to allow using of relative references in CSS for images, fonts and
@@ -319,7 +331,7 @@ Changelog
     - Change default value of the `writableDirectoryPermissions` component option
       from `0644` to `0777`. It should prevent permission errors on some Linux servers
     - Update code style and documentation
-    
+
 
 - **Version 1.0.0** — 2013-12-16
     - Initial release
