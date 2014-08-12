@@ -77,7 +77,7 @@ class SassHandler extends CApplicationComponent
      * Turn on/off overwriting of already compiled CSS files.
      * Will be ignored if $this->forceCompilation is true.
      *
-     * True value means that compiled CSS file will be overwriten
+     * True value means that compiled CSS file will be overwritten
      * if the source SCSS file or related imported files have
      * been changed after previous compilation.
      *
@@ -195,7 +195,7 @@ class SassHandler extends CApplicationComponent
      */
     public function register($sourcePath, $media = '', $insidePublishedDirectory = null, $subDirectory = null, $hashByName = false)
     {
-    	$publishedPath = $this->publish($sourcePath, $insidePublishedDirectory, $subDirectory, $hashByName);
+        $publishedPath = $this->publish($sourcePath, $insidePublishedDirectory, $subDirectory, $hashByName);
         Yii::app()->clientScript->registerCssFile($publishedPath, $media);
     }
 
@@ -231,9 +231,9 @@ class SassHandler extends CApplicationComponent
         $compiledFile = $this->getCompiledFile($sourcePath);
 
         if (empty($insidePublishedDirectory)) {
-        	return Yii::app()->assetManager->publish($compiledFile);
+            return Yii::app()->assetManager->publish($compiledFile);
         } else {
-        	return $this->publishInside($compiledFile, $insidePublishedDirectory, $subDirectory, $hashByName);
+            return $this->publishInside($compiledFile, $insidePublishedDirectory, $subDirectory, $hashByName);
         }
     }
 
@@ -331,31 +331,31 @@ class SassHandler extends CApplicationComponent
      */
     protected function publishInside($compiledFile, $insidePublishedDirectory = null, $subDirectory = null, $hashByName = false)
     {
-    	$insidePublishedDirectory = trim($insidePublishedDirectory, '/\\');
-    	$insidePublishedDirectoryRealPath = Yii::getPathOfAlias($insidePublishedDirectory);
-    	$targetPath = Yii::app()->assetManager->getPublishedPath($insidePublishedDirectoryRealPath) . DIRECTORY_SEPARATOR;
-    	if (!$targetPath) {
-    		throw new CException('Directory with alias "' . $insidePublishedDirectory . '" doesn\'t exist. ' .
-    			'Path with converted aliases: "' . $insidePublishedDirectoryRealPath . '"');
-    	}
+        $insidePublishedDirectory = trim($insidePublishedDirectory, '/\\');
+        $insidePublishedDirectoryRealPath = Yii::getPathOfAlias($insidePublishedDirectory);
+        $targetPath = Yii::app()->assetManager->getPublishedPath($insidePublishedDirectoryRealPath) . DIRECTORY_SEPARATOR;
+        if (!$targetPath) {
+            throw new CException('Directory with alias "' . $insidePublishedDirectory . '" doesn\'t exist. ' .
+                'Path with converted aliases: "' . $insidePublishedDirectoryRealPath . '"');
+        }
 
-    	$subDirectoryUrlSection = '';
-    	if (!empty($subDirectory)) {
-    		$subDirectory = trim($subDirectory, '/\\');
-    		$targetPath = $this->getWritableDirectoryPath($targetPath . $subDirectory);
-    		$subDirectoryUrlSection = $subDirectory . '/';
-    	}
+        $subDirectoryUrlSection = '';
+        if (!empty($subDirectory)) {
+            $subDirectory = trim($subDirectory, '/\\');
+            $targetPath = $this->getWritableDirectoryPath($targetPath . $subDirectory);
+            $subDirectoryUrlSection = $subDirectory . '/';
+        }
 
-    	$basename = basename($compiledFile);
-    	$targetFile = $targetPath . $basename;
-    	if (!file_exists($targetFile) or filemtime($compiledFile) !== filemtime($targetFile)) {
-	    	if (!copy($compiledFile, $targetFile)) {
-	    		throw new CException('Can not copy "' . $compiledFile . '" to the "' . $targetPath . '" directory');
-	    	}
-    	}
+        $basename = basename($compiledFile);
+        $targetFile = $targetPath . $basename;
+        if (!file_exists($targetFile) or filemtime($compiledFile) !== filemtime($targetFile)) {
+            if (!copy($compiledFile, $targetFile)) {
+                throw new CException('Can not copy "' . $compiledFile . '" to the "' . $targetPath . '" directory');
+            }
+        }
 
-    	return Yii::app()->assetManager->getPublishedUrl($insidePublishedDirectoryRealPath) .
-    		'/' . $subDirectoryUrlSection . $basename;
+        return Yii::app()->assetManager->getPublishedUrl($insidePublishedDirectoryRealPath) .
+            '/' . $subDirectoryUrlSection . $basename;
     }
 
     /**
@@ -367,9 +367,9 @@ class SassHandler extends CApplicationComponent
     {
         $formatters = array(
             self::OUTPUT_FORMATTING_NESTED => 'Leafo\ScssPhp\Formatter\Nested',
-			self::OUTPUT_FORMATTING_COMPRESSED => 'Leafo\ScssPhp\Formatter\Compressed',
-			self::OUTPUT_FORMATTING_EXPANDED => 'Leafo\ScssPhp\Formatter\Expanded',
-			self::OUTPUT_FORMATTING_CRUNCHED => 'Leafo\ScssPhp\Formatter\Crunched',
+            self::OUTPUT_FORMATTING_COMPRESSED => 'Leafo\ScssPhp\Formatter\Compressed',
+            self::OUTPUT_FORMATTING_EXPANDED => 'Leafo\ScssPhp\Formatter\Expanded',
+            self::OUTPUT_FORMATTING_CRUNCHED => 'Leafo\ScssPhp\Formatter\Crunched',
         );
         if (isset($formatters[$this->compilerOutputFormatting])) {
             $compiler->setFormatter($formatters[$this->compilerOutputFormatting]);
@@ -413,6 +413,7 @@ class SassHandler extends CApplicationComponent
     {
         $parsedFiles = $this->compiler->getParsedFiles();
         $parsedFiles[] = $sourcePath;
+        $parsedFilesWithTime = array();
         foreach ($parsedFiles as $file) {
             $parsedFilesWithTime[$file] = filemtime($file);
         }
@@ -422,7 +423,7 @@ class SassHandler extends CApplicationComponent
             'autoAddCurrentDirectoryAsImportPath' => $this->autoAddCurrentDirectoryAsImportPath,
             'enableCompass' => $this->enableCompass,
             'importPaths' => $this->compiler->getImportPaths(),
-        	'compilerOutputFormatting' => $this->compilerOutputFormatting,
+            'compilerOutputFormatting' => $this->compilerOutputFormatting,
         );
 
         $this->cacheSet($this->getCacheCompiledPrefix() . $sourcePath, $info);
@@ -483,10 +484,10 @@ class SassHandler extends CApplicationComponent
             'compilerOutputFormatting',
         );
         foreach ($fieldsToCheckForChangedValue as $field) {
-	        if (!isset($compiledInfo[$field]) or
-	            $compiledInfo[$field] !== $this->$field) {
-	            return true;
-	        }
+            if (!isset($compiledInfo[$field]) or
+                $compiledInfo[$field] !== $this->$field) {
+                return true;
+            }
         }
 
         if (!isset($compiledInfo['importPaths']) or
