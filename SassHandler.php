@@ -131,10 +131,12 @@ class SassHandler extends CApplicationComponent
      */
     public $compilerOutputFormatting = self::OUTPUT_FORMATTING_NESTED;
 
-    const OUTPUT_FORMATTING_NESTED     = 'nested',
-          OUTPUT_FORMATTING_COMPRESSED = 'compressed',
-          OUTPUT_FORMATTING_CRUNCHED   = 'crunched',
-          OUTPUT_FORMATTING_EXPANDED   = 'expanded';
+    const OUTPUT_FORMATTING_NESTED     = 'nested';
+    const OUTPUT_FORMATTING_COMPRESSED = 'compressed';
+    const OUTPUT_FORMATTING_CRUNCHED   = 'crunched';
+
+    // Keep using "simple" string for the backward compatibility
+    const OUTPUT_FORMATTING_EXPANDED   = 'simple';
 
     /**
      * Please use OUTPUT_FORMATTING_EXPANDED instead of this constant.
