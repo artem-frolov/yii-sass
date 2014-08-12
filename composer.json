@@ -18,6 +18,12 @@
         "leafo/scssphp": "dev-master",
         "leafo/scssphp-compass": "dev-master"
     },
+    "require-dev": {
+        "phpunit/phpunit": "~4.2",
+        "phpmd/phpmd" : "*",
+        "squizlabs/php_codesniffer": "*",
+        "yiisoft/yii": "~1.1"
+    },
     "autoload": {
         "classmap": [
             "SassHandler.php",

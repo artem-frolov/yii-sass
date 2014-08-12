@@ -290,6 +290,23 @@ Yii::app()->sass->compile($sourcePath);
 Yii::app()->sass->getCompiler();
 ```
 
+Unit Tests
+--------
+Execute the following commands in the root directory of ``yii-sass``
+extension to run unit tests.
+
+For Windows:
+```
+composer install
+vendor\bin\phpunit
+```
+
+For Linux/Mac/etc.:
+```
+composer install
+vendor/bin/phpunit
+```
+
 Changelog
 --------
 - **Version 1.1.0** — 2014-02-07
