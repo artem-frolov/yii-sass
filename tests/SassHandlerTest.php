@@ -20,7 +20,7 @@ class SassHandlerTest extends PHPUnit_Framework_TestCase
             __DIR__ . '/../vendor/leafo/scssphp/scss.inc.php';
 
         // Use "compressed" formatting to simplify code with assertions
-        $this->sassHandler->compilerOutputFormatting = 'compressed';
+        $this->sassHandler->compilerOutputFormatting = SassHandler::OUTPUT_FORMATTING_COMPRESSED;
 
         $this->fixturesDirectory = __DIR__ . '/fixtures/';
     }
