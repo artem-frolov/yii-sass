@@ -22,7 +22,7 @@ This extension caches compiled CSS code and prevents recompilation if there is n
 
 Requirements
 --------
-* PHP >= 5.1
+* PHP >= 5.3
 * Yii 1.0 or 1.1
 * [scssphp compiler](http://leafo.net/scssphp/)
 * [scssphp-compass library](https://github.com/leafo/scssphp-compass) -
