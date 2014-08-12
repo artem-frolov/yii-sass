@@ -189,10 +189,11 @@ All options below are optional except the "class" item.
         'writableDirectoryPermissions' => 0777,
         
         // Customize the formatting of the output CSS.
-        // Possible values are 'simple', 'nested', 'compressed'
-        // @see http://leafo.net/scssphp/docs/#output_formatting
-        // Default is 'nested'
-        'compilerOutputFormatting' => 'nested',
+        // Use one of the SassHandler::OUTPUT_FORMATTING_* constants
+        // to set the formatting type.
+        // @link http://leafo.net/scssphp/docs/#output_formatting
+        // Default is OUTPUT_FORMATTING_NESTED
+        'compilerOutputFormatting' => SassHandler::OUTPUT_FORMATTING_NESTED,
     ),
     ...
 ),

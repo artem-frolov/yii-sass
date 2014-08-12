@@ -121,19 +121,20 @@ class SassHandler extends CApplicationComponent
 
     /**
      * Customize the formatting of the output CSS.
-     * Possible values are 'simple', 'nested', 'compressed'
-     * @see http://leafo.net/scssphp/docs/#output_formatting
+     * Use one of the SassHandler::OUTPUT_FORMATTING_* constants
+     * to set the formatting type.
+     * @link http://leafo.net/scssphp/docs/#output_formatting
      *
-     * Default is 'nested'
+     * Default is OUTPUT_FORMATTING_NESTED
      *
      * @var string
      */
     public $compilerOutputFormatting = self::OUTPUT_FORMATTING_NESTED;
 
-    const OUTPUT_FORMATTING_NESTED = 'nested',
+    const OUTPUT_FORMATTING_NESTED     = 'nested',
           OUTPUT_FORMATTING_COMPRESSED = 'compressed',
-          OUTPUT_FORMATTING_CRUNCHED = 'crunched',
-          OUTPUT_FORMATTING_EXPANDED = 'expanded';
+          OUTPUT_FORMATTING_CRUNCHED   = 'crunched',
+          OUTPUT_FORMATTING_EXPANDED   = 'expanded';
 
     /**
      * Please use OUTPUT_FORMATTING_EXPANDED instead of this constant.
