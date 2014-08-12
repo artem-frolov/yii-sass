@@ -333,7 +333,8 @@ class SassHandler extends CApplicationComponent
     {
         $insidePublishedDirectory = trim($insidePublishedDirectory, '/\\');
         $insidePublishedDirectoryRealPath = Yii::getPathOfAlias($insidePublishedDirectory);
-        $targetPath = Yii::app()->assetManager->getPublishedPath($insidePublishedDirectoryRealPath) . DIRECTORY_SEPARATOR;
+        $targetPath = Yii::app()->assetManager->getPublishedPath($insidePublishedDirectoryRealPath, $hashByName)
+            . DIRECTORY_SEPARATOR;
         if (!$targetPath) {
             throw new CException('Directory with alias "' . $insidePublishedDirectory . '" doesn\'t exist. ' .
                 'Path with converted aliases: "' . $insidePublishedDirectoryRealPath . '"');
@@ -354,7 +355,7 @@ class SassHandler extends CApplicationComponent
             }
         }
 
-        return Yii::app()->assetManager->getPublishedUrl($insidePublishedDirectoryRealPath) .
+        return Yii::app()->assetManager->getPublishedUrl($insidePublishedDirectoryRealPath, $hashByName) .
             '/' . $subDirectoryUrlSection . $basename;
     }
 
