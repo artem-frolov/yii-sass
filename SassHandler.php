@@ -136,6 +136,14 @@ class SassHandler extends CApplicationComponent
           OUTPUT_FORMATTING_EXPANDED = 'expanded';
 
     /**
+     * Please use OUTPUT_FORMATTING_EXPANDED instead of this constant.
+     * This constant is kept only for the backward compatibility.
+     *
+     * @deprecated deprecated since version 1.2.0
+     */
+    const OUTPUT_FORMATTING_SIMPLE = self::OUTPUT_FORMATTING_EXPANDED;
+
+    /**
      * Compiler object
      *
      * @var ExtendedScssc
