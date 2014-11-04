@@ -310,6 +310,10 @@ vendor/bin/phpunit
 
 Changelog
 --------
+- **Version 1.2.1** — 2014-11-04
+    - Bug #4: Don't overwrite a compiled file during the compilation of another
+      source file which has the same basename
+
 - **Version 1.2.0** — 2014-08-12
     - Fix compatibility with the new ``0.1`` version of the
       ``scssphp`` compiler *(alexdevid)*

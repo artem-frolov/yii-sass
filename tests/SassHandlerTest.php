@@ -23,6 +23,12 @@ class SassHandlerTest extends PHPUnit_Framework_TestCase
         $this->sassHandler->compilerOutputFormatting = SassHandler::OUTPUT_FORMATTING_COMPRESSED;
 
         $this->fixturesDirectory = __DIR__ . '/fixtures/';
+
+        // Cleanup
+        $compiledDirectory = Yii::getPathOfAlias($this->sassHandler->sassCompiledPath);
+        if (is_dir($compiledDirectory)) {
+            CFileHelper::removeDirectory($compiledDirectory);
+        }
     }
 
     /**
@@ -49,6 +55,22 @@ class SassHandlerTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(
             'div{filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=10);opacity:0.1;}',
             $this->sassHandler->compile($scssFile)
+        );
+    }
+
+    public function testGetCompiledFile()
+    {
+        $sourcePath = $this->fixturesDirectory . 'compile.scss';
+        $compiledPath = $this->sassHandler->getCompiledFile($sourcePath);
+        $expectedPath = Yii::getPathOfAlias($this->sassHandler->sassCompiledPath)
+            . DIRECTORY_SEPARATOR . 'compile-'
+            . substr(md5($sourcePath), -8)
+            . '.css';
+
+        $this->assertEquals($expectedPath, $compiledPath);
+        $this->assertEquals(
+            'body a{color:red;}',
+            file_get_contents($compiledPath)
         );
     }
 }

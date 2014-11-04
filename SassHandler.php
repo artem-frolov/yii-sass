@@ -441,7 +441,14 @@ class SassHandler extends CApplicationComponent
      */
     protected function getCompiledCssFilePath($sourcePath)
     {
-        return $this->getWritableDirectoryPath($this->sassCompiledPath) . basename($sourcePath, '.scss') . '.css';
+        // Add 8 last characters from the hash string
+        // to prevent overwriting of previously compiled files
+        // with the same basename but from another source directory
+        return $this->getWritableDirectoryPath($this->sassCompiledPath)
+            . basename($sourcePath, '.scss')
+            . '-'
+            . substr(md5($sourcePath), -8)
+            . '.css';
     }
 
     /**
