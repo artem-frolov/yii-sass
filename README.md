@@ -35,23 +35,14 @@ Installation can be done using
 or manually by downloading required files.
 
 ### Install using [Composer](http://getcomposer.org/doc/00-intro.md "Introduction to Composer")
-1.  Allow installation of development versions of Composer packages  
-    Required ["leafo/scssphp-compass" Composer package](https://packagist.org/packages/leafo/scssphp-compass "leafo/scssphp-compass Composer package on Packagist")
-    doesn't have a stable version.  
-    So you need to do one of the following:
-    -   Add `"minimum-stability": "dev"` to your `composer.json` file
-    -   **OR** add the following 2 lines to your `require` section of the `composer.json`:  
-        `"leafo/scssphp": "dev-master@dev",`  
-        `"leafo/scssphp-compass": "dev-master@dev"`
-
-2.  Install **[artem-frolov/yii-sass](https://packagist.org/packages/artem-frolov/yii-sass "artem-frolov/yii-sass Composer package on Packagist.org")**
+1.  Install **[artem-frolov/yii-sass](https://packagist.org/packages/artem-frolov/yii-sass "artem-frolov/yii-sass Composer package on Packagist.org")**
     package from Packagist.
     Required libraries will be installed automatically.  
     Execute in your application's directory:
     ```
     composer require artem-frolov/yii-sass "1.*"
     ```  
-3.  Update your application's configuration *(e.g. protected/config/main.php)* like this:
+2.  Update your application's configuration *(e.g. protected/config/main.php)* like this:
     
     ```php
     'aliases' => array(
