@@ -234,7 +234,7 @@ class SassHandler extends CApplicationComponent
         $compiledFile = $this->getCompiledFile($sourcePath);
 
         if (empty($insidePublishedDirectory)) {
-            return Yii::app()->assetManager->publish($compiledFile);
+            return Yii::app()->assetManager->publish($compiledFile, $hashByName);
         } else {
             return $this->publishInside($compiledFile, $insidePublishedDirectory, $subDirectory, $hashByName);
         }
