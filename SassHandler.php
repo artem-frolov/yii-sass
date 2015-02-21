@@ -15,7 +15,10 @@ class SassHandler extends CApplicationComponent
 {
     /**
      * Path for cache files. Will be used if Yii caching is not enabled.
+     * Will be chmod'ed to become writable, see "writableDirectoryPermissions"
+     * parameter.
      * Yii aliases can be used.
+     *
      * Defaults to 'application.runtime.sass-cache'
      *
      * @var string
@@ -24,7 +27,8 @@ class SassHandler extends CApplicationComponent
 
     /**
      * Path and filename of scss.inc.php
-     * Defaults to relative location in Composer's vendor directory:
+     *
+     * Defaults to the relative location in Composer's vendor directory:
      * __DIR__ . "/../../leafo/scssphp/scss.inc.php"
      *
      * @var string
@@ -33,7 +37,8 @@ class SassHandler extends CApplicationComponent
 
     /**
      * Path and filename of compass.inc.php
-     * Defaults to relative location in Composer's vendor directory:
+     *
+     * Defaults to the relative location in Composer's vendor directory:
      * __DIR__ . "/../../leafo/scssphp-compass/compass.inc.php"
      *
      * @var string
@@ -43,6 +48,7 @@ class SassHandler extends CApplicationComponent
     /**
      * Enable Compass support.
      * Automatically add required import paths and functions.
+     *
      * Defaults to false
      *
      * @var boolean
@@ -50,10 +56,12 @@ class SassHandler extends CApplicationComponent
     public $enableCompass = false;
 
     /**
-     * Path to the directory with compiled CSS files.
-     * Will be created automatically if doesn't exist.
-     * Will be chmod'ed if it's not writable by script.
+     * Path to a directory with compiled CSS files.
+     * Will be created automatically if it doesn't exist.
+     * Will be chmod'ed to become writable, see "writableDirectoryPermissions"
+     * parameter.
      * Yii aliases can be used.
+     *
      * Defaults to 'application.runtime.sass-compiled'
      *
      * @var string
@@ -75,14 +83,14 @@ class SassHandler extends CApplicationComponent
 
     /**
      * Turn on/off overwriting of already compiled CSS files.
-     * Will be ignored if $this->forceCompilation is true.
+     * Will be ignored if "forceCompilation" parameter's value is true.
      *
      * True value means that compiled CSS file will be overwritten
      * if the source SCSS file or related imported files have
      * been changed after previous compilation.
      *
      * False value means that compilation will be done only if
-     * output CSS file doesn't exist.
+     * an output CSS file doesn't exist.
      *
      * Defaults to true
      *
@@ -93,6 +101,7 @@ class SassHandler extends CApplicationComponent
     /**
      * Automatically add directory containing SCSS file being processed
      * as an import path for the @import Sass directive.
+     *
      * Defaults to true
      *
      * @var boolean
@@ -101,11 +110,12 @@ class SassHandler extends CApplicationComponent
 
     /**
      * List of import paths.
-     * Can be strings or callable functions:
+     * Can be a list of strings or callable functions:
      * function($searchPath) {return $targetPath;}
-     * Defaults to empty array
      *
-     * @var array
+     * Defaults to an empty array
+     *
+     * @var string[]|callable[]
      */
     public $importPaths = array();
 
@@ -113,6 +123,7 @@ class SassHandler extends CApplicationComponent
      * Chmod permissions used for creating/updating of writable
      * directories for cache files and compiled CSS files.
      * Mind the leading zero for octal values.
+     *
      * Defaults to 0777
      *
      * @var integer
@@ -123,6 +134,7 @@ class SassHandler extends CApplicationComponent
      * Chmod permissions used for creating/updating of writable
      * cache files and compiled CSS files.
      * Mind the leading zero for octal values.
+     *
      * Defaults to 0666
      *
      * @var integer
@@ -134,9 +146,10 @@ class SassHandler extends CApplicationComponent
      * $hashByName value determines whether the published file should be named
      * as the hashed basename. If false, the name will be the hash taken
      * from dirname of the path being published and path mtime.
-     * Defaults to false.
-     * Set true if the path being published is shared
+     * Set to true if the path being published is shared
      * among different extensions.
+     *
+     * Defaults to false
      *
      * @see CAssetManager::publish()
      * @var bool
@@ -323,14 +336,16 @@ class SassHandler extends CApplicationComponent
             $compiledCssCode = $this->compile($sourcePath);
 
             if (!file_put_contents($cssPath, $compiledCssCode, LOCK_EX)) {
-                throw new CException('Can not write to the file: ' . $cssPath);
+                throw new CException(
+                    'Can not write the compiled CSS file: ' . $cssPath
+                );
             }
 
             if (!chmod($cssPath, $this->writableFilePermissions)) {
                 throw new CException(
                     'Can not chmod('
                     . decoct($this->writableFilePermissions)
-                    . ') file: ' . $cssPath
+                    . ') the compiled CSS file: ' . $cssPath
                 );
             }
 
@@ -355,7 +370,9 @@ class SassHandler extends CApplicationComponent
 
         $sourceCode = file_get_contents($sourcePath);
         if ($sourceCode === false) {
-            throw new CException('Can not read from the file: ' . $sourcePath);
+            throw new CException(
+                'Can not read the source SCSS file: ' . $sourcePath
+            );
         }
 
         $compiledCssCode = $this->compiler->compile($sourceCode);
@@ -459,15 +476,16 @@ class SassHandler extends CApplicationComponent
         ) {
             if (!copy($compiledFile, $targetFile)) {
                 throw new CException(
-                    'Can not copy "' . $compiledFile . '" to the "'
-                    . $targetPath . '" directory'
+                    'Can not copy the compiled file "' . $compiledFile
+                    . '" to the "' . $targetPath . '" directory'
                 );
             }
 
             if (!chmod($targetFile, $this->writableFilePermissions)) {
                 throw new CException(
                     'Can not chmod(' . decoct($this->writableFilePermissions)
-                    . ') copied file: ' . $targetFile
+                    . ') the copied file with a compiled CSS code: '
+                    . $targetFile
                 );
             }
         }
@@ -509,10 +527,10 @@ class SassHandler extends CApplicationComponent
     /**
      * Set import paths for compiler.
      * Paths will be used for @import Sass method.
-     * Each path can be a filesystem paths.
+     * Each path can be a filesystem path.
      * Or an Yii path with application aliases (like "application").
      *
-     * @param array|string $paths Single import path or list of paths
+     * @param array|string $paths Single import path or a list of paths
      */
     protected function setImportPaths($paths)
     {
@@ -532,8 +550,8 @@ class SassHandler extends CApplicationComponent
     }
 
     /**
-     * Save list of parsed files
-     * with the time files were last modified to the cache.
+     * Save a list of parsed files to the cache
+     * with the time files were last modified.
      * Must be called right after the compilation.
      *
      * @param string $sourcePath Path to the source SCSS file
@@ -560,9 +578,9 @@ class SassHandler extends CApplicationComponent
     }
 
     /**
-     * Get path to the compiled CSS file
+     * Get path to a compiled CSS file
      *
-     * @param string $sourcePath Path to the source SCSS file
+     * @param string $sourcePath Path to a source SCSS file
      * @return string
      */
     protected function getCompiledCssFilePath($sourcePath)
@@ -578,9 +596,9 @@ class SassHandler extends CApplicationComponent
     }
 
     /**
-     * Is source SCSS file needs to be compiled/recompiled
+     * Does source SCSS file need to be compiled/recompiled
      *
-     * @param string $path Path to the source SCSS file
+     * @param string $path Path to a source SCSS file
      * @return boolean
      */
     protected function isCompilationNeeded($path)
@@ -605,10 +623,10 @@ class SassHandler extends CApplicationComponent
     }
 
     /**
-     * Is last compilation environment changed for specified SCSS file.
+     * Is the previous compilation environment changed for specified SCSS file.
      * Check component's settings and modification time of imported files.
      *
-     * @param string $path Path to the source SCSS file
+     * @param string $path Path to a source SCSS file
      * @return boolean
      */
     protected function isLastCompilationEnvironmentChanged($path)
@@ -694,9 +712,9 @@ class SassHandler extends CApplicationComponent
     }
 
     /**
-     * Set cache value.
+     * Save a value to the cache.
      * Uses Yii cache if available.
-     * Writes to the file otherwise.
+     * Writes to a yii-sass cache file otherwise.
      *
      * @param string $name
      * @param mixed $value
@@ -716,7 +734,7 @@ class SassHandler extends CApplicationComponent
         if (!chmod($path, $this->writableFilePermissions)) {
             throw new CException(
                 'Can not chmod(' . decoct($this->writableFilePermissions)
-                . ') file: ' . $path
+                . ') the cache file: ' . $path
             );
         }
 
@@ -724,12 +742,12 @@ class SassHandler extends CApplicationComponent
     }
 
     /**
-     * Get cache value.
+     * Get a value from the cache.
      * Uses Yii cache if available.
-     * Writes to the file otherwise.
+     * Looks for a yii-sass cache file otherwise.
      *
      * @param string $name
-     * @return mixed Cache value or false if entry is not found
+     * @return mixed Cached value or false if entry is not found
      */
     protected function cacheGet($name)
     {
@@ -744,7 +762,7 @@ class SassHandler extends CApplicationComponent
     }
 
     /**
-     * Get path for the cache entry
+     * Get path for an yii-sass cache entry
      *
      * @param string $name
      * @return string
