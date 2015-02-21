@@ -25,7 +25,7 @@ class SassHandler extends CApplicationComponent
     /**
      * Path and filename of scss.inc.php
      * Defaults to relative location in Composer's vendor directory:
-     * dirname(__FILE__) . "/../../leafo/scssphp/scss.inc.php"
+     * __DIR__ . "/../../leafo/scssphp/scss.inc.php"
      *
      * @var string
      */
@@ -34,7 +34,7 @@ class SassHandler extends CApplicationComponent
     /**
      * Path and filename of compass.inc.php
      * Defaults to relative location in Composer's vendor directory:
-     * dirname(__FILE__) . "/../../leafo/scssphp-compass/compass.inc.php"
+     * __DIR__ . "/../../leafo/scssphp-compass/compass.inc.php"
      *
      * @var string
      */
@@ -168,12 +168,15 @@ class SassHandler extends CApplicationComponent
      */
     public function init()
     {
+        $vendorPath = __DIR__ . '/../../';
+
         if (!$this->compilerPath) {
-            $this->compilerPath = dirname(__FILE__) . '/../../leafo/scssphp/scss.inc.php';
+            $this->compilerPath = $vendorPath . 'leafo/scssphp/scss.inc.php';
         }
 
         if (!$this->compassPath) {
-            $this->compassPath = dirname(__FILE__) . "/../../leafo/scssphp-compass/compass.inc.php";
+            $this->compassPath = $vendorPath
+                . "leafo/scssphp-compass/compass.inc.php";
         }
 
         parent::init();
@@ -183,7 +186,8 @@ class SassHandler extends CApplicationComponent
      * Publish and register compiled CSS file.
      * Compile/recompile source SCSS file if needed.
      *
-     * Optionally can publish compiled CSS file inside specific published directory.
+     * Optionally can publish compiled CSS file inside
+     * specific published directory.
      * It's helpful when CSS code has relative references to other
      * resources (images/fonts) and when these resources are also published
      * using Yii asset manager. This method allows to publish compiled CSS files
@@ -193,22 +197,40 @@ class SassHandler extends CApplicationComponent
      * "image.jpg" is stored inside path alias "application.files.images"
      * Somewhere in the code the following is called during page generation:
      * Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.files'));
-     * SCSS file has the following code: background-image: url(../images/image.jpg);
+     * SCSS file has the following code:
+     * background-image: url(../images/image.jpg);
      * Then the correct call of the method will be:
      * Yii::app()->sass->register('path-to-scss-file.scss', '', 'application.files', 'css_compiled');
      *
      * @param string $sourcePath Path to the source SCSS file
-     * @param string $media Media that the CSS file should be applied to. If empty, it means all media types
-     * @param string $insidePublishedDirectory Path to the directory with resource files
-     * which is published somewhere in the application explicitly.
-     * Default is null which means that CSS file will be published separately.
-     * @param string $subDirectory Subdirectory for the CSS file within publicly available location. Default is null
-     * @param boolean $hashByName Must be the same as in the CAssetManager::publish() call
-     * for $insidePublishedDirectory. See CAssetManager::publish() for details. Default is false.
+     * @param string $media Media that the CSS file should be applied to.
+     *        If empty, it means all media types
+     * @param string $insidePublishedDirectory Path to the directory with
+     *        resource files which is published somewhere in the application
+     *        explicitly.
+     *        Default is null which means that CSS file will be published
+     *        separately.
+     * @param string $subDirectory Subdirectory for the CSS file within publicly
+     *        available location. Default is null
+     * @param boolean $hashByName Must be the same
+     *        as in the CAssetManager::publish() call
+     *        for $insidePublishedDirectory.
+     *        See CAssetManager::publish() for details.
+     *        Default is false.
      */
-    public function register($sourcePath, $media = '', $insidePublishedDirectory = null, $subDirectory = null, $hashByName = false)
-    {
-        $publishedPath = $this->publish($sourcePath, $insidePublishedDirectory, $subDirectory, $hashByName);
+    public function register(
+        $sourcePath,
+        $media = '',
+        $insidePublishedDirectory = null,
+        $subDirectory = null,
+        $hashByName = false
+    ) {
+        $publishedPath = $this->publish(
+            $sourcePath,
+            $insidePublishedDirectory,
+            $subDirectory,
+            $hashByName
+        );
         Yii::app()->clientScript->registerCssFile($publishedPath, $media);
     }
 
@@ -216,7 +238,8 @@ class SassHandler extends CApplicationComponent
      * Publish compiled CSS file.
      * Compile/recompile source SCSS file if needed.
      *
-     * Optionally can publish compiled CSS file inside specific published directory.
+     * Optionally can publish compiled CSS file inside
+     * specific published directory.
      * It's helpful when CSS code has relative references to other
      * resources (images/fonts) and when these resources are also published
      * using Yii asset manager. This method allows to publish compiled CSS files
@@ -226,32 +249,52 @@ class SassHandler extends CApplicationComponent
      * "image.jpg" is stored inside path alias "application.files.images"
      * Somewhere in the code the following is called during page generation:
      * Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.files'));
-     * SCSS file has the following code: background-image: url(../images/image.jpg);
+     * SCSS file has the following code:
+     * background-image: url(../images/image.jpg);
      * Then the correct call of the method will be:
      * Yii::app()->sass->publish('path-to-scss-file.scss', 'application.files', 'css_compiled');
      *
      * @param string $sourcePath Path to the source SCSS file
-     * @param string $insidePublishedDirectory Path to the directory with resource files
-     * which is published somewhere in the application explicitly.
-     * Default is null which means that CSS file will be published separately.
-     * @param string $subDirectory Subdirectory for the CSS file within publicly available location. Default is null
-     * @param boolean $hashByName Must be the same as in the CAssetManager::publish() call
-     * for $insidePublishedDirectory. See CAssetManager::publish() for details. Default is false.
+     * @param string $insidePublishedDirectory Path to the directory
+     *        with resource files which is published somewhere
+     *        in the application explicitly.
+     *        Default is null which means that CSS file
+     *        will be published separately.
+     * @param string $subDirectory Subdirectory for the CSS file
+     *        within publicly available location. Default is null
+     * @param boolean $hashByName Must be the same
+     *        as in the CAssetManager::publish() call
+     *        for $insidePublishedDirectory.
+     *        See CAssetManager::publish() for details.
+     *        Default is false.
      * @return string URL of the published CSS file
      */
-    public function publish($sourcePath, $insidePublishedDirectory = null, $subDirectory = null, $hashByName = false)
-    {
+    public function publish(
+        $sourcePath,
+        $insidePublishedDirectory = null,
+        $subDirectory = null,
+        $hashByName = false
+    ) {
         $compiledFile = $this->getCompiledFile($sourcePath);
 
         if (empty($insidePublishedDirectory)) {
-            return Yii::app()->assetManager->publish($compiledFile, $hashByName);
+            return Yii::app()->assetManager->publish(
+                $compiledFile,
+                $hashByName
+            );
         } else {
-            return $this->publishInside($compiledFile, $insidePublishedDirectory, $subDirectory, $hashByName);
+            return $this->publishInside(
+                $compiledFile,
+                $insidePublishedDirectory,
+                $subDirectory,
+                $hashByName
+            );
         }
     }
 
     /**
-     * Get path to the compiled CSS file, compile/recompile source file if needed
+     * Get path to the compiled CSS file,
+     * compile/recompile source file if needed.
      *
      * @param string $sourcePath Path to the source SCSS file
      * @throws CException
@@ -268,7 +311,11 @@ class SassHandler extends CApplicationComponent
             }
 
             if (!chmod($cssPath, $this->writableFilePermissions)) {
-                throw new CException('Can not chmod(' . decoct($this->writableFilePermissions) . ') file: ' . $cssPath);
+                throw new CException(
+                    'Can not chmod('
+                    . decoct($this->writableFilePermissions)
+                    . ') file: ' . $cssPath
+                );
             }
 
             $this->saveParsedFilesInfoToCache($sourcePath);
@@ -337,47 +384,77 @@ class SassHandler extends CApplicationComponent
      * using Yii asset manager
      *
      * @param string $compiledFile Path to the already compiled CSS file
-     * @param string $insidePublishedDirectory Path to the directory with resource files
-     * which is published somewhere in the application explicitly.
-     * Default is null which means that CSS file will be published separately.
-     * @param string $subDirectory Subdirectory for the CSS file within publicly available location. Default is null
-     * @param boolean $hashByName Must be the same as in the CAssetManager::publish() call
-     * for $insidePublishedDirectory. See CAssetManager::publish() for details. Default is false.
+     * @param string $insidePublishedDirectory Path to the directory
+     *        with resource files which is published somewhere
+     *        in the application explicitly.
+     *        Default is null which means that CSS file
+     *        will be published separately.
+     * @param string $subDirectory Subdirectory for the CSS file within
+     *        publicly available location.
+     *        Default is null
+     * @param boolean $hashByName Must be the same
+     *        as in the CAssetManager::publish() call
+     *        for $insidePublishedDirectory.
+     *        See CAssetManager::publish() for details.
+     *        Default is false.
      * @throws CException
      * @return string URL of the published CSS file
      */
-    protected function publishInside($compiledFile, $insidePublishedDirectory = null, $subDirectory = null, $hashByName = false)
-    {
+    protected function publishInside(
+        $compiledFile,
+        $insidePublishedDirectory = null,
+        $subDirectory = null,
+        $hashByName = false
+    ) {
         $insidePublishedDirectory = trim($insidePublishedDirectory, '/\\');
-        $insidePublishedDirectoryRealPath = Yii::getPathOfAlias($insidePublishedDirectory);
-        $targetPath = Yii::app()->assetManager->getPublishedPath($insidePublishedDirectoryRealPath, $hashByName)
+        $insidePublishedDirectoryRealPath = Yii::getPathOfAlias(
+            $insidePublishedDirectory
+        );
+        $targetPath = Yii::app()->assetManager
+            ->getPublishedPath($insidePublishedDirectoryRealPath, $hashByName)
             . DIRECTORY_SEPARATOR;
         if (!$targetPath) {
-            throw new CException('Directory with alias "' . $insidePublishedDirectory . '" doesn\'t exist. ' .
-                'Path with converted aliases: "' . $insidePublishedDirectoryRealPath . '"');
+            throw new CException(
+                'Directory with alias "' . $insidePublishedDirectory
+                . '" doesn\'t exist. ' . 'Path with converted aliases: "'
+                . $insidePublishedDirectoryRealPath . '"'
+            );
         }
 
         $subDirectoryUrlSection = '';
         if (!empty($subDirectory)) {
             $subDirectory = trim($subDirectory, '/\\');
-            $targetPath = $this->getWritableDirectoryPath($targetPath . $subDirectory);
+            $targetPath = $this->getWritableDirectoryPath(
+                $targetPath . $subDirectory
+            );
             $subDirectoryUrlSection = $subDirectory . '/';
         }
 
         $basename = basename($compiledFile);
         $targetFile = $targetPath . $basename;
-        if (!file_exists($targetFile) or filemtime($compiledFile) !== filemtime($targetFile)) {
+        if (
+            !file_exists($targetFile)
+            or filemtime($compiledFile) !== filemtime($targetFile)
+        ) {
             if (!copy($compiledFile, $targetFile)) {
-                throw new CException('Can not copy "' . $compiledFile . '" to the "' . $targetPath . '" directory');
+                throw new CException(
+                    'Can not copy "' . $compiledFile . '" to the "'
+                    . $targetPath . '" directory'
+                );
             }
 
             if (!chmod($targetFile, $this->writableFilePermissions)) {
-                throw new CException('Can not chmod(' . decoct($this->writableFilePermissions) . ') copied file: ' . $targetFile);
+                throw new CException(
+                    'Can not chmod(' . decoct($this->writableFilePermissions)
+                    . ') copied file: ' . $targetFile
+                );
             }
         }
 
-        return Yii::app()->assetManager->getPublishedUrl($insidePublishedDirectoryRealPath, $hashByName) .
-            '/' . $subDirectoryUrlSection . $basename;
+        return Yii::app()->assetManager->getPublishedUrl(
+            $insidePublishedDirectoryRealPath,
+            $hashByName
+        ) . '/' . $subDirectoryUrlSection . $basename;
     }
 
     /**
@@ -388,15 +465,23 @@ class SassHandler extends CApplicationComponent
     protected function setupOutputFormatting($compiler)
     {
         $formatters = array(
-            self::OUTPUT_FORMATTING_NESTED => 'Leafo\ScssPhp\Formatter\Nested',
-            self::OUTPUT_FORMATTING_COMPRESSED => 'Leafo\ScssPhp\Formatter\Compressed',
-            self::OUTPUT_FORMATTING_EXPANDED => 'Leafo\ScssPhp\Formatter\Expanded',
-            self::OUTPUT_FORMATTING_CRUNCHED => 'Leafo\ScssPhp\Formatter\Crunched',
+            self::OUTPUT_FORMATTING_NESTED
+                => 'Leafo\ScssPhp\Formatter\Nested',
+            self::OUTPUT_FORMATTING_COMPRESSED
+                => 'Leafo\ScssPhp\Formatter\Compressed',
+            self::OUTPUT_FORMATTING_EXPANDED
+                => 'Leafo\ScssPhp\Formatter\Expanded',
+            self::OUTPUT_FORMATTING_CRUNCHED
+                => 'Leafo\ScssPhp\Formatter\Crunched',
         );
         if (isset($formatters[$this->compilerOutputFormatting])) {
-            $compiler->setFormatter($formatters[$this->compilerOutputFormatting]);
+            $compiler->setFormatter(
+                $formatters[$this->compilerOutputFormatting]
+            );
         } else {
-            throw new CException('Unknown output formatting: ' . $this->compilerOutputFormatting);
+            throw new CException(
+                'Unknown output formatting: ' . $this->compilerOutputFormatting
+            );
         }
     }
 
@@ -426,7 +511,8 @@ class SassHandler extends CApplicationComponent
     }
 
     /**
-     * Save list of parsed files with the time files were last modified to the cache
+     * Save list of parsed files
+     * with the time files were last modified to the cache.
      * Must be called right after the compilation.
      *
      * @param string $sourcePath Path to the source SCSS file
@@ -442,7 +528,8 @@ class SassHandler extends CApplicationComponent
 
         $info = array(
             'compiledFiles' => $parsedFilesWithTime,
-            'autoAddCurrentDirectoryAsImportPath' => $this->autoAddCurrentDirectoryAsImportPath,
+            'autoAddCurrentDirectoryAsImportPath'
+                => $this->autoAddCurrentDirectoryAsImportPath,
             'enableCompass' => $this->enableCompass,
             'importPaths' => $this->compiler->getImportPaths(),
             'compilerOutputFormatting' => $this->compilerOutputFormatting,
@@ -505,7 +592,9 @@ class SassHandler extends CApplicationComponent
      */
     protected function isLastCompilationEnvironmentChanged($path)
     {
-        $compiledInfo = $this->cacheGet($this->getCacheCompiledPrefix() . $path);
+        $compiledInfo = $this->cacheGet(
+            $this->getCacheCompiledPrefix() . $path
+        );
 
         $fieldsToCheckForChangedValue = array(
             'autoAddCurrentDirectoryAsImportPath',
@@ -519,16 +608,22 @@ class SassHandler extends CApplicationComponent
             }
         }
 
-        if (!isset($compiledInfo['importPaths']) or
-            $compiledInfo['importPaths'] !== $this->compiler->getImportPaths()) {
+        if (
+            !isset($compiledInfo['importPaths']) or
+            $compiledInfo['importPaths'] !== $this->compiler->getImportPaths()
+        ) {
             return true;
         }
 
-        if (empty($compiledInfo['compiledFiles']) or !is_array($compiledInfo['compiledFiles'])) {
+        if (
+            empty($compiledInfo['compiledFiles'])
+            or !is_array($compiledInfo['compiledFiles'])
+        ) {
             return true;
         }
 
-        foreach ($compiledInfo['compiledFiles'] as $compiledFile => $previousModificationTime) {
+        foreach ($compiledInfo['compiledFiles'] as
+                 $compiledFile => $previousModificationTime) {
             if (filemtime($compiledFile) != $previousModificationTime) {
                 return true;
             }
@@ -568,7 +663,10 @@ class SassHandler extends CApplicationComponent
         }
 
         if (!chmod($path, $this->writableDirectoryPermissions)) {
-            throw new CException('Can not chmod(' . decoct($this->writableDirectoryPermissions) . ') directory: ' . $path);
+            throw new CException(
+                'Can not chmod(' . decoct($this->writableDirectoryPermissions)
+                . ') directory: ' . $path
+            );
         }
 
         return rtrim($path, '/\\') . DIRECTORY_SEPARATOR;
@@ -595,7 +693,10 @@ class SassHandler extends CApplicationComponent
         }
 
         if (!chmod($path, $this->writableFilePermissions)) {
-            throw new CException('Can not chmod(' . decoct($this->writableFilePermissions) . ') file: ' . $path);
+            throw new CException(
+                'Can not chmod(' . decoct($this->writableFilePermissions)
+                . ') file: ' . $path
+            );
         }
 
         return true;
@@ -632,14 +733,23 @@ class SassHandler extends CApplicationComponent
         $maxFileLength = 255;
         $suffix = md5($name) . '.bin';
         $convertedName = basename($name);
-        $convertedName = preg_replace('/[^A-Za-z0-9\_\.]+/', '-', $convertedName);
+        $convertedName = preg_replace(
+            '/[^A-Za-z0-9\_\.]+/',
+            '-',
+            $convertedName
+        );
         $convertedName = trim($convertedName, '-');
-        $convertedName = substr($convertedName, 0, $maxFileLength - strlen('-' . $suffix));
+        $convertedName = substr(
+            $convertedName,
+            0,
+            $maxFileLength - strlen('-' . $suffix)
+        );
         $convertedName = strtolower($convertedName);
         if ($convertedName) {
             $convertedName .= '-';
         }
 
-        return $this->getWritableDirectoryPath($this->cachePath) . $convertedName . $suffix;
+        return $this->getWritableDirectoryPath($this->cachePath)
+            . $convertedName . $suffix;
     }
 }

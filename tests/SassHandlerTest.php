@@ -1,6 +1,6 @@
 <?php
 
-class SassHandlerTest extends PHPUnit_Framework_TestCase 
+class SassHandlerTest extends PHPUnit_Framework_TestCase
 {
     /**
      * @var SassHandler
