@@ -130,6 +130,20 @@ class SassHandler extends CApplicationComponent
     public $writableFilePermissions = 0666;
 
     /**
+     * Default value for $hashByName parameter in extension's methods.
+     * $hashByName value determines whether the published file should be named
+     * as the hashed basename. If false, the name will be the hash taken
+     * from dirname of the path being published and path mtime.
+     * Defaults to false.
+     * Set true if the path being published is shared
+     * among different extensions.
+     *
+     * @see CAssetManager::publish()
+     * @var bool
+     */
+    public $defaultHashByName = false;
+
+    /**
      * Customize the formatting of the output CSS.
      * Use one of the SassHandler::OUTPUT_FORMATTING_* constants
      * to set the formatting type.
@@ -216,14 +230,15 @@ class SassHandler extends CApplicationComponent
      *        as in the CAssetManager::publish() call
      *        for $insidePublishedDirectory.
      *        See CAssetManager::publish() for details.
-     *        Default is false.
+     *        "defaultHashByName" plugin parameter's value is used by default.
+     * @see CAssetManager::publish()
      */
     public function register(
         $sourcePath,
         $media = '',
         $insidePublishedDirectory = null,
         $subDirectory = null,
-        $hashByName = false
+        $hashByName = null
     ) {
         $publishedPath = $this->publish(
             $sourcePath,
@@ -266,21 +281,22 @@ class SassHandler extends CApplicationComponent
      *        as in the CAssetManager::publish() call
      *        for $insidePublishedDirectory.
      *        See CAssetManager::publish() for details.
-     *        Default is false.
+     *        "defaultHashByName" plugin parameter's value is used by default.
      * @return string URL of the published CSS file
+     * @see CAssetManager::publish()
      */
     public function publish(
         $sourcePath,
         $insidePublishedDirectory = null,
         $subDirectory = null,
-        $hashByName = false
+        $hashByName = null
     ) {
         $compiledFile = $this->getCompiledFile($sourcePath);
 
         if (empty($insidePublishedDirectory)) {
             return Yii::app()->assetManager->publish(
                 $compiledFile,
-                $hashByName
+                is_null($hashByName) ? $this->defaultHashByName : $hashByName
             );
         } else {
             return $this->publishInside(
@@ -396,16 +412,21 @@ class SassHandler extends CApplicationComponent
      *        as in the CAssetManager::publish() call
      *        for $insidePublishedDirectory.
      *        See CAssetManager::publish() for details.
-     *        Default is false.
+     *        "defaultHashByName" plugin parameter's value is used by default.
      * @throws CException
      * @return string URL of the published CSS file
+     * @see CAssetManager::publish()
      */
     protected function publishInside(
         $compiledFile,
         $insidePublishedDirectory = null,
         $subDirectory = null,
-        $hashByName = false
+        $hashByName = null
     ) {
+        $hashByName = is_null($hashByName)
+            ? $this->defaultHashByName
+            : $hashByName;
+
         $insidePublishedDirectory = trim($insidePublishedDirectory, '/\\');
         $insidePublishedDirectoryRealPath = Yii::getPathOfAlias(
             $insidePublishedDirectory
