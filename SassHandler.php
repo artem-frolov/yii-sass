@@ -120,6 +120,16 @@ class SassHandler extends CApplicationComponent
     public $writableDirectoryPermissions = 0777;
 
     /**
+     * Chmod permissions used for creating/updating of writable
+     * cache files and compiled CSS files.
+     * Mind the leading zero for octal values.
+     * Defaults to 0666
+     *
+     * @var integer
+     */
+    public $writableFilePermissions = 0666;
+
+    /**
      * Customize the formatting of the output CSS.
      * Use one of the SassHandler::OUTPUT_FORMATTING_* constants
      * to set the formatting type.
@@ -257,6 +267,10 @@ class SassHandler extends CApplicationComponent
                 throw new CException('Can not write to the file: ' . $cssPath);
             }
 
+            if (!chmod($cssPath, $this->writableFilePermissions)) {
+                throw new CException('Can not chmod(' . decoct($this->writableFilePermissions) . ') file: ' . $cssPath);
+            }
+
             $this->saveParsedFilesInfoToCache($sourcePath);
         }
         return $cssPath;
@@ -355,6 +369,10 @@ class SassHandler extends CApplicationComponent
         if (!file_exists($targetFile) or filemtime($compiledFile) !== filemtime($targetFile)) {
             if (!copy($compiledFile, $targetFile)) {
                 throw new CException('Can not copy "' . $compiledFile . '" to the "' . $targetPath . '" directory');
+            }
+
+            if (!chmod($targetFile, $this->writableFilePermissions)) {
+                throw new CException('Can not chmod(' . decoct($this->writableFilePermissions) . ') copied file: ' . $targetFile);
             }
         }
 
@@ -548,11 +566,11 @@ class SassHandler extends CApplicationComponent
                 throw new CException('Can not create directory: ' . $path);
             }
         }
-        if (!is_writable($path)) {
-            if (!chmod($path, $this->writableDirectoryPermissions)) {
-                throw new CException('Can not chmod(' . decoct($this->writableDirectoryPermissions) . ') directory: ' . $path);
-            }
+
+        if (!chmod($path, $this->writableDirectoryPermissions)) {
+            throw new CException('Can not chmod(' . decoct($this->writableDirectoryPermissions) . ') directory: ' . $path);
         }
+
         return rtrim($path, '/\\') . DIRECTORY_SEPARATOR;
     }
 
@@ -575,6 +593,11 @@ class SassHandler extends CApplicationComponent
         if (!file_put_contents($path, serialize($value), LOCK_EX)) {
             throw new CException('Can not write to the cache file: ' . $path);
         }
+
+        if (!chmod($path, $this->writableFilePermissions)) {
+            throw new CException('Can not chmod(' . decoct($this->writableFilePermissions) . ') file: ' . $path);
+        }
+
         return true;
     }
 
