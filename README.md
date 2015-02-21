@@ -3,6 +3,8 @@ Sass (SCSS) and Compass support for the Yii framework
 yii-sass extension implements Sass and Compass support: compilation on-the-fly,
 publishing, registration in views.
 
+[![Build Status](https://travis-ci.org/artem-frolov/yii-sass.svg?branch=master)](https://travis-ci.org/artem-frolov/yii-sass)
+
 External Sass tools are NOT used, compilation is done using PHP compiler.
 
 *Only SCSS syntax is supported.  
@@ -88,11 +90,11 @@ or manually by downloading required files.
             'class' => 'ext.yii-sass.SassHandler',
             
             // Path and filename of scss.inc.php
-            'compilerPath' => dirname(__FILE__) . '/../vendor/scssphp/scss.inc.php',
+            'compilerPath' => __DIR__ . '/../vendor/scssphp/scss.inc.php',
             
             // Path and filename of compass.inc.php
             // Required only if Compass support is required
-            'compassPath' => dirname(__FILE__) . '/../vendor/scssphp-compass/compass.inc.php',
+            'compassPath' => __DIR__ . '/../vendor/scssphp-compass/compass.inc.php',
             
             // Enable Compass support, defaults to false
             'enableCompass' => true,
@@ -120,17 +122,19 @@ All options below are optional except the "class" item.
         'class' => 'vendor.artem-frolov.yii-sass.SassHandler',
         
         // Path and filename of scss.inc.php
-        // Defaults to relative location in Composer's vendor directory
-        'compilerPath' => dirname(__FILE__) . "/../../../vendor/leafo/scssphp/scss.inc.php",
+        // Defaults to the relative location in Composer's vendor directory
+        'compilerPath' => __DIR__ . "/../../../vendor/leafo/scssphp/scss.inc.php",
         
         // Path and filename of compass.inc.php
-        // Required only if Compass support is required
-        // Defaults to relative location in Composer's vendor directory
-        'compassPath' => dirname(__FILE__) . '/../../../vendor/leafo/scssphp-compass/compass.inc.php',
+        // Required only if Compass support is needed
+        // Defaults to the relative location in Composer's vendor directory
+        'compassPath' => __DIR__ . '/../../../vendor/leafo/scssphp-compass/compass.inc.php',
 
         // Path for cache files. Will be used if Yii caching is not enabled.
-         // Yii aliases can be used.
-         // Defaults to 'application.runtime.sass-cache'
+        // Will be chmod'ed to become writable,
+        // see "writableDirectoryPermissions" parameter.
+        // Yii aliases can be used.
+        // Defaults to 'application.runtime.sass-cache'
         'cachePath' => 'application.runtime.sass-cache',
         
         // Enable Compass support.
@@ -138,9 +142,10 @@ All options below are optional except the "class" item.
         // Defaults to false
         'enableCompass' => false,
         
-        // Path to the directory with compiled CSS files.
-        // Will be created automatically if doesn't exist.
-        // Will be chmod'ed if it's not writable by script.
+        // Path to a directory with compiled CSS files.
+        // Will be created automatically if it doesn't exist.
+        // Will be chmod'ed to become writable,
+        // see "writableDirectoryPermissions" parameter.
         // Yii aliases can be used.
         // Defaults to 'application.runtime.sass-compiled'
         'sassCompiledPath' => 'application.runtime.sass-compiled',
@@ -153,12 +158,15 @@ All options below are optional except the "class" item.
         'forceCompilation' => false,
         
         // Turn on/off overwriting of already compiled CSS files.
-        // Will be ignored if $this->forceCompilation is true.
+        // Will be ignored if "forceCompilation" parameter's value is true.
+        //
         // True value means that compiled CSS file will be overwriten
         // if the source SCSS file or related imported files have
         // been changed after previous compilation.
+        //
         // False value means that compilation will be done only if
-        // output CSS file doesn't exist.
+        // an output CSS file doesn't exist.
+        //
         // Defaults to true
         'allowOverwrite' => true,
         
@@ -168,9 +176,9 @@ All options below are optional except the "class" item.
         'autoAddCurrentDirectoryAsImportPath' => true,
         
         // List of import paths.
-        // Can be strings or callable functions:
+        // Can be a list of strings or callable functions:
         // function($searchPath) {return $targetPath;}
-        // Defaults to empty array
+        // Defaults to an empty array
         'importPaths' => array(),
         
         // Chmod permissions used for creating/updating of writable
@@ -178,6 +186,24 @@ All options below are optional except the "class" item.
         // Mind the leading zero for octal values.
         // Defaults to 0777
         'writableDirectoryPermissions' => 0777,
+
+        // Chmod permissions used for creating/updating of writable
+        // cache files and compiled CSS files.
+        // Mind the leading zero for octal values.
+        // Defaults to 0666
+        'writableFilePermissions' => 0666,
+
+        // Default value for $hashByName parameter in extension's methods.
+        // $hashByName value determines whether the published file should be named
+        // as the hashed basename. If false, the name will be the hash taken
+        // from dirname of the path being published and path mtime.
+        // 
+        // Set to true if the path being published is shared
+        // among different extensions.
+        // 
+        // Defaults to false
+        // @see CAssetManager::publish()
+        'defaultHashByName' => false,
         
         // Customize the formatting of the output CSS.
         // Use one of the SassHandler::OUTPUT_FORMATTING_* constants
@@ -218,9 +244,10 @@ Component methods
  * Default is null which means that CSS file will be published separately.
  * @param string $subDirectory Subdirectory for the CSS file within publicly available location. Default is null
  * @param boolean $hashByName Must be the same as in the CAssetManager::publish() call
- * for $insidePublishedDirectory. See CAssetManager::publish() for details. Default is false.
+ * for $insidePublishedDirectory. See CAssetManager::publish() for details.
+ * "defaultHashByName" plugin parameter's value is used by default.
  */
-Yii::app()->sass->register($sourcePath, $media = '', $insidePublishedDirectory = null, $subDirectory = null, $hashByName = false);
+Yii::app()->sass->register($sourcePath, $media = '', $insidePublishedDirectory = null, $subDirectory = null, $hashByName = null);
 
 
 /**
@@ -247,10 +274,11 @@ Yii::app()->sass->register($sourcePath, $media = '', $insidePublishedDirectory =
  * Default is null which means that CSS file will be published separately.
  * @param string $subDirectory Subdirectory for the CSS file within publicly available location. Default is null
  * @param boolean $hashByName Must be the same as in the CAssetManager::publish() call
- * for $insidePublishedDirectory. See CAssetManager::publish() for details. Default is false.
+ * for $insidePublishedDirectory. See CAssetManager::publish() for details.
+ * "defaultHashByName" plugin parameter's value is used by default.
  * @return string URL of the published CSS file
  */
-Yii::app()->sass->publish($sourcePath, $insidePublishedDirectory = null, $subDirectory = null, $hashByName = false);
+Yii::app()->sass->publish($sourcePath, $insidePublishedDirectory = null, $subDirectory = null, $hashByName = null);
 
 
 /**
@@ -301,6 +329,23 @@ vendor/bin/phpunit
 
 Changelog
 --------
+- **Version 1.3.0** — 2015-02-21
+    - Fix CAssetManager::publish() call - pass $hashByName value used in
+      Yii::app()->sass->publish() and Yii::app()->sass->register() methods
+    - Remove deprecated PHPUnit "strict" setting
+    - Do not use unstable (dev-master) version of scssphp compiler anymore
+      when Composer is used to install yii-sass extension
+    - Make installation via Composer easier - "minimum-stability" setting
+      is not needed anymore
+    - Add "writableFilePermissions" option (defaults to 0666),
+      fix file permissions issues with certain umask settings in OS by calling
+      chmod for created/updated files, always call chmod for writable directories
+    - Add "defaultHashByName" setting which allows to set a default $hashByName
+      value for all plugin's methods
+    - Add more information to exceptions' messages
+    - Enable Travis CI builds
+    - Update documentation
+
 - **Version 1.2.1** — 2014-11-04
     - Bug #4: Don't overwrite a compiled file during the compilation of another
       source file which has the same basename
@@ -337,3 +382,4 @@ Resources
 - [Forum support topic for yii-sass extension](http://www.yiiframework.com/forum/index.php/topic/49937-extension-yii-sass-sass-scss-and-compass-support/)
 - [yii-sass extension page on the Packagist](https://packagist.org/packages/artem-frolov/yii-sass)
 - [scssphp compiler](http://leafo.net/scssphp/)
+- [Travis CI builds](https://travis-ci.org/artem-frolov/yii-sass)
