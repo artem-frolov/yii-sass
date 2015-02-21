@@ -351,17 +351,17 @@ vendor/bin/phpunit
 Changelog
 --------
 - **Version 1.3.0** — 2015-02-21
-    - Fix CAssetManager::publish() call - pass $hashByName value used in
-      Yii::app()->sass->publish() and Yii::app()->sass->register() methods
-    - Remove deprecated PHPUnit "strict" setting
-    - Do not use unstable (dev-master) version of scssphp compiler anymore
+    - Fix ``CAssetManager::publish()`` call - pass ``$hashByName`` value used in
+      ``Yii::app()->sass->publish()`` and ``Yii::app()->sass->register()`` methods
+    - Remove deprecated PHPUnit ``strict`` setting
+    - Do not use unstable (``dev-master``) version of ``scssphp`` compiler anymore
       when Composer is used to install yii-sass extension
-    - Make installation via Composer easier - "minimum-stability" setting
+    - Make installation via Composer easier - ``minimum-stability`` setting
       is not needed anymore
-    - Add "writableFilePermissions" option (defaults to 0666),
+    - Add ``writableFilePermissions`` option (defaults to ``0666``),
       fix file permissions issues with certain umask settings in OS by calling
       chmod for created/updated files, always call chmod for writable directories
-    - Add "defaultHashByName" setting which allows to set a default $hashByName
+    - Add ``defaultHashByName`` setting which allows to set a default ``$hashByName``
       value for all plugin's methods
     - Add more information to exceptions' messages
     - Enable Travis CI builds
