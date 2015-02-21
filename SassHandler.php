@@ -223,11 +223,18 @@ class SassHandler extends CApplicationComponent
      * E.g.:
      * "image.jpg" is stored inside path alias "application.files.images"
      * Somewhere in the code the following is called during page generation:
-     * Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.files'));
+     * Yii::app()->assetManager->publish(
+     *     Yii::getPathOfAlias('application.files')
+     * );
      * SCSS file has the following code:
      * background-image: url(../images/image.jpg);
      * Then the correct call of the method will be:
-     * Yii::app()->sass->register('path-to-scss-file.scss', '', 'application.files', 'css_compiled');
+     * Yii::app()->sass->register(
+     *     'path-to-scss-file.scss',
+     *     '',
+     *     'application.files',
+     *     'css_compiled'
+     * );
      *
      * @param string $sourcePath Path to the source SCSS file
      * @param string $media Media that the CSS file should be applied to.
@@ -276,11 +283,17 @@ class SassHandler extends CApplicationComponent
      * E.g.:
      * "image.jpg" is stored inside path alias "application.files.images"
      * Somewhere in the code the following is called during page generation:
-     * Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.files'));
+     * Yii::app()->assetManager->publish(
+     *     Yii::getPathOfAlias('application.files')
+     * );
      * SCSS file has the following code:
      * background-image: url(../images/image.jpg);
      * Then the correct call of the method will be:
-     * Yii::app()->sass->publish('path-to-scss-file.scss', 'application.files', 'css_compiled');
+     * Yii::app()->sass->publish(
+     *     'path-to-scss-file.scss',
+     *     'application.files',
+     *     'css_compiled'
+     * );
      *
      * @param string $sourcePath Path to the source SCSS file
      * @param string $insidePublishedDirectory Path to the directory

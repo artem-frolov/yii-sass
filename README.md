@@ -51,7 +51,7 @@ or manually by downloading required files.
         ...
         // Path to your Composer's "vendor" directory
         // You can remove this if you use Composer's autoloader and Yii >= 1.1.15
-        'vendor' => dirname(__FILE__) . '/../../../vendor',
+        'vendor' => __DIR__ . '/../../../vendor',
     ),
     ...
     'components' => array(
@@ -93,7 +93,7 @@ or manually by downloading required files.
             'compilerPath' => __DIR__ . '/../vendor/scssphp/scss.inc.php',
             
             // Path and filename of compass.inc.php
-            // Required only if Compass support is required
+            // Required only if Compass support is needed
             'compassPath' => __DIR__ . '/../vendor/scssphp-compass/compass.inc.php',
             
             // Enable Compass support, defaults to false
@@ -108,7 +108,9 @@ Usage
 Add the code like the following to your views/layout.  
 It will compile SCSS file *(or recompile if needed)*, publish and register compiled CSS file: 
 ```php
-Yii::app()->sass->register(Yii::getPathOfAlias('application.assets.sass') . '/your-file.scss');
+Yii::app()->sass->register(
+    Yii::getPathOfAlias('application.assets.sass') . '/your-file.scss'
+);
 ```
 
 Component options
@@ -235,19 +237,32 @@ Component methods
  * Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.files'));
  * SCSS file has the following code: background-image: url(../images/image.jpg);
  * Then the correct call of the method will be:
- * Yii::app()->sass->register('path-to-scss-file.scss', '', 'application.files', 'css_compiled');
+ * Yii::app()->sass->register(
+ *     'path-to-scss-file.scss',
+ *     '',
+ *     'application.files',
+ *     'css_compiled'
+ * );
  * 
  * @param string $sourcePath Path to the source SCSS file
- * @param string $media Media that the CSS file should be applied to. If empty, it means all media types
- * @param string $insidePublishedDirectory Path to the directory with resource files
- * which is published somewhere in the application explicitly.
- * Default is null which means that CSS file will be published separately.
- * @param string $subDirectory Subdirectory for the CSS file within publicly available location. Default is null
+ * @param string $media Media that the CSS file should be applied to.
+ *        If empty,it means all media types
+ * @param string $insidePublishedDirectory Path to the directory with
+ *        resource files which is published somewhere in the application explicitly.
+ *        Default is null which means that CSS file will be published separately.
+ * @param string $subDirectory Subdirectory for the CSS file within
+ *        publicly available location. Default is null
  * @param boolean $hashByName Must be the same as in the CAssetManager::publish() call
- * for $insidePublishedDirectory. See CAssetManager::publish() for details.
- * "defaultHashByName" plugin parameter's value is used by default.
+ *        for $insidePublishedDirectory. See CAssetManager::publish() for details.
+ *        "defaultHashByName" plugin parameter's value is used by default.
  */
-Yii::app()->sass->register($sourcePath, $media = '', $insidePublishedDirectory = null, $subDirectory = null, $hashByName = null);
+Yii::app()->sass->register(
+    $sourcePath,
+    $media = '',
+    $insidePublishedDirectory = null,
+    $subDirectory = null,
+    $hashByName = null
+);
 
 
 /**
@@ -270,15 +285,21 @@ Yii::app()->sass->register($sourcePath, $media = '', $insidePublishedDirectory =
  * 
  * @param string $sourcePath Path to the source SCSS file
  * @param string $insidePublishedDirectory Path to the directory with resource files
- * which is published somewhere in the application explicitly.
- * Default is null which means that CSS file will be published separately.
- * @param string $subDirectory Subdirectory for the CSS file within publicly available location. Default is null
+ *        which is published somewhere in the application explicitly.
+ *        Default is null which means that CSS file will be published separately.
+ * @param string $subDirectory Subdirectory for the CSS file within publicly
+ *        available location. Default is null
  * @param boolean $hashByName Must be the same as in the CAssetManager::publish() call
- * for $insidePublishedDirectory. See CAssetManager::publish() for details.
- * "defaultHashByName" plugin parameter's value is used by default.
+ *        for $insidePublishedDirectory. See CAssetManager::publish() for details.
+ *        "defaultHashByName" plugin parameter's value is used by default.
  * @return string URL of the published CSS file
  */
-Yii::app()->sass->publish($sourcePath, $insidePublishedDirectory = null, $subDirectory = null, $hashByName = null);
+Yii::app()->sass->publish(
+    $sourcePath,
+    $insidePublishedDirectory = null,
+    $subDirectory = null,
+    $hashByName = null
+);
 
 
 /**
