@@ -573,10 +573,7 @@ class SassHandler extends CApplicationComponent
     {
         $parsedFiles = $this->compiler->getParsedFiles();
         $parsedFiles[] = $sourcePath;
-        $parsedFilesWithTime = array();
-        foreach ($parsedFiles as $file) {
-            $parsedFilesWithTime[$file] = filemtime($file);
-        }
+        $parsedFilesWithTime = $parsedFiles;
 
         $info = array(
             'compiledFiles' => $parsedFilesWithTime,
