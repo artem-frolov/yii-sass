@@ -42,7 +42,7 @@ or manually by downloading required files.
     Required libraries will be installed automatically.  
     Execute in your application's directory:
     ```
-    composer require artem-frolov/yii-sass "1.*"
+    composer require artem-frolov/yii-sass "2.*"
     ```  
 2.  Update your application's configuration *(e.g. protected/config/main.php)* like this:
     
@@ -213,6 +213,10 @@ All options below are optional except the "class" item.
         // @link http://leafo.net/scssphp/docs/#output_formatting
         // Default is OUTPUT_FORMATTING_NESTED
         'compilerOutputFormatting' => SassHandler::OUTPUT_FORMATTING_NESTED,
+        
+        // Id of the cache application component.
+        // Defaults to 'cache' (the primary cache application component)
+        'cacheComponentId' => 'cache',
     ),
     ...
 ),
@@ -350,6 +354,10 @@ vendor/bin/phpunit
 
 Changelog
 --------
+- **Version 2.0.0** — 2017-05-01
+    - Update scssphp compiler to version ~0.6.7
+    - Allow to use custom Yii caching components by configuring "cacheComponentId" option
+
 - **Version 1.3.0** — 2015-02-21
     - Fix ``CAssetManager::publish()`` call - pass ``$hashByName`` value used in
       ``Yii::app()->sass->publish()`` and ``Yii::app()->sass->register()`` methods
