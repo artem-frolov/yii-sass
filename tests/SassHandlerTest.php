@@ -38,7 +38,7 @@ class SassHandlerTest extends PHPUnit_Framework_TestCase
     {
         $scssFile = $this->fixturesDirectory . 'compile.scss';
         $this->assertEquals(
-            'body a{color:red;}',
+            'body a{color:red}',
             $this->sassHandler->compile($scssFile)
         );
     }
@@ -53,23 +53,45 @@ class SassHandlerTest extends PHPUnit_Framework_TestCase
         $this->sassHandler->enableCompass = true;
         $scssFile = $this->fixturesDirectory . 'compass.scss';
         $this->assertEquals(
-            'div{filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=10);opacity:0.1;}',
+            'div{filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=10);opacity:0.1}',
             $this->sassHandler->compile($scssFile)
         );
     }
 
     public function testGetCompiledFile()
     {
-        $sourcePath = $this->fixturesDirectory . 'compile.scss';
+        $sourcePath = $this->fixturesDirectory . 'import.scss';
         $compiledPath = $this->sassHandler->getCompiledFile($sourcePath);
         $expectedPath = Yii::getPathOfAlias($this->sassHandler->sassCompiledPath)
-            . DIRECTORY_SEPARATOR . 'compile-'
+            . DIRECTORY_SEPARATOR . 'import-'
             . substr(md5($sourcePath), -8)
             . '.css';
 
         $this->assertEquals($expectedPath, $compiledPath);
         $this->assertEquals(
-            'body a{color:red;}',
+            'body a{color:red}',
+            file_get_contents($compiledPath)
+        );
+    }
+
+    public function testGetCompiledFileWithoutRecompilation()
+    {
+        $sourcePath = $this->fixturesDirectory . 'import.scss';
+
+        // First compilation request
+        $this->sassHandler->getCompiledFile($sourcePath);
+
+        // Second compilation request
+        $compiledPath = $this->sassHandler->getCompiledFile($sourcePath);
+
+        $expectedPath = Yii::getPathOfAlias($this->sassHandler->sassCompiledPath)
+            . DIRECTORY_SEPARATOR . 'import-'
+            . substr(md5($sourcePath), -8)
+            . '.css';
+
+        $this->assertEquals($expectedPath, $compiledPath);
+        $this->assertEquals(
+            'body a{color:red}',
             file_get_contents($compiledPath)
         );
     }
