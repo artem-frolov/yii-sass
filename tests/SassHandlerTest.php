@@ -73,4 +73,26 @@ class SassHandlerTest extends PHPUnit_Framework_TestCase
             file_get_contents($compiledPath)
         );
     }
+
+    public function testGetCompiledFileWithoutRecompilation()
+    {
+        $sourcePath = $this->fixturesDirectory . 'import.scss';
+
+        // First compilation request
+        $this->sassHandler->getCompiledFile($sourcePath);
+
+        // Second compilation request
+        $compiledPath = $this->sassHandler->getCompiledFile($sourcePath);
+
+        $expectedPath = Yii::getPathOfAlias($this->sassHandler->sassCompiledPath)
+            . DIRECTORY_SEPARATOR . 'import-'
+            . substr(md5($sourcePath), -8)
+            . '.css';
+
+        $this->assertEquals($expectedPath, $compiledPath);
+        $this->assertEquals(
+            'body a{color:red}',
+            file_get_contents($compiledPath)
+        );
+    }
 }
