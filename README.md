@@ -356,6 +356,7 @@ Changelog
 --------
 - **Version 2.0.0** — 2017-05-01
     - Update scssphp compiler to version ~0.6.7
+    - Minimum required PHP version is changed to >= 5.4.0
     - Allow to use custom Yii caching components by configuring "cacheComponentId" option
 
 - **Version 1.3.0** — 2015-02-21
