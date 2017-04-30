@@ -38,7 +38,7 @@ class SassHandlerTest extends PHPUnit_Framework_TestCase
     {
         $scssFile = $this->fixturesDirectory . 'compile.scss';
         $this->assertEquals(
-            'body a{color:red;}',
+            'body a{color:red}',
             $this->sassHandler->compile($scssFile)
         );
     }
@@ -53,7 +53,7 @@ class SassHandlerTest extends PHPUnit_Framework_TestCase
         $this->sassHandler->enableCompass = true;
         $scssFile = $this->fixturesDirectory . 'compass.scss';
         $this->assertEquals(
-            'div{filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=10);opacity:0.1;}',
+            'div{filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=10);opacity:0.1}',
             $this->sassHandler->compile($scssFile)
         );
     }
@@ -69,7 +69,7 @@ class SassHandlerTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals($expectedPath, $compiledPath);
         $this->assertEquals(
-            'body a{color:red;}',
+            'body a{color:red}',
             file_get_contents($compiledPath)
         );
     }
