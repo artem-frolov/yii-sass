@@ -60,10 +60,10 @@ class SassHandlerTest extends PHPUnit_Framework_TestCase
 
     public function testGetCompiledFile()
     {
-        $sourcePath = $this->fixturesDirectory . 'compile.scss';
+        $sourcePath = $this->fixturesDirectory . 'import.scss';
         $compiledPath = $this->sassHandler->getCompiledFile($sourcePath);
         $expectedPath = Yii::getPathOfAlias($this->sassHandler->sassCompiledPath)
-            . DIRECTORY_SEPARATOR . 'compile-'
+            . DIRECTORY_SEPARATOR . 'import-'
             . substr(md5($sourcePath), -8)
             . '.css';
 

@@ -5,6 +5,7 @@ require __DIR__ . '/../vendor/yiisoft/yii/framework/console/CConsoleApplication.
 require __DIR__ . '/../vendor/yiisoft/yii/framework/console/CConsoleCommandRunner.php';
 require __DIR__ . '/../vendor/yiisoft/yii/framework/base/CApplicationComponent.php';
 require __DIR__ . '/../vendor/yiisoft/yii/framework/utils/CFileHelper.php';
+require __DIR__ . '/../vendor/yiisoft/yii/framework/logging/CLogger.php';
 
 spl_autoload_unregister(array('YiiBase','autoload'));
 
