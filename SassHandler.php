@@ -169,9 +169,12 @@ class SassHandler extends CApplicationComponent
     public $compilerOutputFormatting = self::OUTPUT_FORMATTING_NESTED;
 
     /**
-     * @var string the ID of the cache application component. Defaults to 'cache' (the primary cache application component.)
+     * Id of the cache application component.
+     * Defaults to 'cache' (the primary cache application component)
+     *
+     * @var string
      */
-    public $cacheID = 'cache';
+    public $cacheComponentId = 'cache';
 
     const OUTPUT_FORMATTING_NESTED     = 'nested';
     const OUTPUT_FORMATTING_COMPRESSED = 'compressed';
@@ -737,8 +740,8 @@ class SassHandler extends CApplicationComponent
      */
     protected function cacheSet($name, $value)
     {
-        if ($this->cache) {
-            return $this->cache->set($name, $value);
+        if ($this->getCacheComponent()) {
+            return $this->getCacheComponent()->set($name, $value);
         }
         $path = $this->getCachePathForName($name);
         if (!file_put_contents($path, serialize($value), LOCK_EX)) {
@@ -765,8 +768,8 @@ class SassHandler extends CApplicationComponent
      */
     protected function cacheGet($name)
     {
-        if ($this->cache) {
-            return $this->cache->get($name);
+        if ($this->getCacheComponent()) {
+            return $this->getCacheComponent()->get($name);
         }
         $path = $this->getCachePathForName($name);
         if (is_readable($path)) {
@@ -807,10 +810,10 @@ class SassHandler extends CApplicationComponent
     }
 
     /**
-     * @return ICache the cache used for caching the content.
+     * @return ICache Yii caching component
      */
-    protected function getCache()
+    protected function getCacheComponent()
     {
-        return $this->cacheID ? \Yii::app()->getComponent($this->cacheID) : null;
+        return $this->cacheComponentId ? Yii::app()->getComponent($this->cacheComponentId) : null;
     }
 }
