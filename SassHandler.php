@@ -203,15 +203,14 @@ class SassHandler extends CApplicationComponent
      */
     public function init()
     {
-        $vendorPath = __DIR__ . '/../../';
+        $vendorPath = __DIR__ . '/../../vendor';
 
         if (!$this->compilerPath) {
-            $this->compilerPath = $vendorPath . 'leafo/scssphp/scss.inc.php';
+            $this->compilerPath = $vendorPath . '/leafo/scssphp/scss.inc.php';
         }
 
         if (!$this->compassPath) {
-            $this->compassPath = $vendorPath
-                . "leafo/scssphp-compass/compass.inc.php";
+            $this->compassPath = $vendorPath . '/leafo/scssphp-compass/compass.inc.php';
         }
 
         parent::init();
