@@ -356,7 +356,7 @@ class SassHandler extends CApplicationComponent
         if ($this->isCompilationNeeded($sourcePath)) {
             $compiledCssCode = $this->compile($sourcePath);
 
-            if (!file_put_contents($cssPath, $compiledCssCode, LOCK_EX)) {
+            if (file_put_contents($cssPath, $compiledCssCode, LOCK_EX)===false) {
                 throw new CException(
                     'Can not write the compiled CSS file: ' . $cssPath
                 );
