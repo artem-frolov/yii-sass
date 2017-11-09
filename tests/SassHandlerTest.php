@@ -95,4 +95,10 @@ class SassHandlerTest extends PHPUnit_Framework_TestCase
             file_get_contents($compiledPath)
         );
     }
+
+    public function testEmptyFileCompilation()
+    {
+        $sourcePath = $this->fixturesDirectory . 'empty.scss';
+        $this->assertNotEmpty($this->sassHandler->getCompiledFile($sourcePath));
+    }
 }

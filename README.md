@@ -354,6 +354,9 @@ vendor/bin/phpunit
 
 Changelog
 --------
+- **Version 2.0.1** — 2017-11-09
+    - #15: Fix an error with the compilation of empty files (tomaszbrunarski)
+    
 - **Version 2.0.0** — 2017-05-01
     - Update scssphp compiler to version ~0.6.7
     - Minimum required PHP version is changed to >= 5.4.0
