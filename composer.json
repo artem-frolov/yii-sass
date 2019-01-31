@@ -22,7 +22,8 @@
         "phpunit/phpunit": "~4.2",
         "phpmd/phpmd" : "*",
         "squizlabs/php_codesniffer": "*",
-        "yiisoft/yii": "~1.1"
+        "yiisoft/yii": "~1.1",
+	  	"padaliyajay/php-autoprefixer": "dev-master"
     },
     "autoload": {
         "classmap": [

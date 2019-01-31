@@ -1,5 +1,7 @@
 <?php
 
+use Padaliyajay\PHPAutoprefixer\Autoprefixer;
+
 /**
  * Sass Handler
  *
@@ -397,6 +399,8 @@ class SassHandler extends CApplicationComponent
         }
 
         $compiledCssCode = $this->compiler->compile($sourceCode);
+
+		$compiledCssCode 		= (new Autoprefixer($compiledCssCode))->compile();
 
         if ($this->autoAddCurrentDirectoryAsImportPath) {
             $this->compiler->setImportPaths($originalImportPaths);
