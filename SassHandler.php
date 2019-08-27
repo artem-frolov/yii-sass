@@ -684,7 +684,7 @@ class SassHandler extends CApplicationComponent
 
         foreach ($compiledInfo['compiledFiles'] as
                  $compiledFile => $previousModificationTime) {
-            if (filemtime($compiledFile) != $previousModificationTime) {
+            if (filemtime($compiledFile) > $previousModificationTime) {
                 return true;
             }
         }
