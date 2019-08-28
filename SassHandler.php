@@ -745,7 +745,7 @@ class SassHandler extends CApplicationComponent
     protected function cacheSet($name, $value)
     {
         if ($this->getCacheComponent()) {
-            return $this->getCacheComponent()->set($name, $value);
+            return $this->getCacheComponent()->set($name, $value, 604800);
         }
         $path = $this->getCachePathForName($name);
         if (!file_put_contents($path, serialize($value), LOCK_EX)) {
