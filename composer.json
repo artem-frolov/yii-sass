@@ -15,7 +15,7 @@
     ],
     "require": {
         "php": ">=5.4.0",
-        "leafo/scssphp": "^0.6",
+        "leafo/scssphp": "^0.8.4",
         "artem-frolov/scssphp-compass": "0.1.*"
     },
     "require-dev": {
