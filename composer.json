@@ -15,14 +15,14 @@
     ],
     "require": {
         "php": ">=5.4.0",
-        "leafo/scssphp": "~0.6.7",
+        "leafo/scssphp": "^0.6",
         "artem-frolov/scssphp-compass": "0.1.*"
     },
     "require-dev": {
-        "phpunit/phpunit": "~4.2",
+        "phpunit/phpunit": "^4.2",
         "phpmd/phpmd" : "*",
         "squizlabs/php_codesniffer": "*",
-        "yiisoft/yii": "~1.1",
+        "yiisoft/yii": "^1.1",
 	  	"padaliyajay/php-autoprefixer": "dev-master"
     },
     "autoload": {
