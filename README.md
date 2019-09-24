@@ -1,6 +1,6 @@
-Sass (SCSS) and Compass support for the Yii framework
+Sass (SCSS) support for the Yii framework
 ========
-yii-sass extension implements Sass and Compass support: compilation on-the-fly,
+yii-sass extension implements Sass support: compilation on-the-fly,
 publishing, registration in views.
 
 [![Build Status](https://travis-ci.org/artem-frolov/yii-sass.svg?branch=master)](https://travis-ci.org/artem-frolov/yii-sass)
@@ -16,19 +16,11 @@ It allows you to use variables, nested rules, mixins, inline imports, and more,
 all with a fully CSS-compatible syntax. Sass helps keep large stylesheets
 well-organized, and get small stylesheets up and running quickly.
 
-**[Compass](http://compass-style.org/reference/compass/ "Compass framework reference")**
-is an open-source CSS authoring framework which uses
-the Sass stylesheet language to make writing stylesheets powerful and easy.
-
-This extension caches compiled CSS code and prevents recompilation if there is no need in it.
-
 Requirements
 --------
 * PHP >= 5.4
 * Yii 1.0 or 1.1
 * [scssphp compiler](http://leafo.net/scssphp/)
-* [scssphp-compass library](https://github.com/leafo/scssphp-compass) -
-*only if Compass support is needed*
 
 Installation
 --------
@@ -62,10 +54,7 @@ or manually by downloading required files.
             'class' => 'vendor.artem-frolov.yii-sass.SassHandler',
             
             // Use the following if you use Composer's autoloader and Yii >= 1.1.15
-            //'class' => 'SassHandler',
-            
-            // Enable Compass support, defaults to false
-            'enableCompass' => true,
+            //'class' => 'SassHandler',            
         ),
         ...
     ),
@@ -77,9 +66,6 @@ or manually by downloading required files.
     will look like "protected/extensions/yii-sass/SassHandler.php"
 2.  [Download scssphp compiler](https://github.com/leafo/scssphp/archive/master.zip "Download scssphp compiler from Github")  
     Put files to the "protected/vendor/scssphp" directory
-3.  [Download scssphp-compass library](https://github.com/leafo/scssphp-compass/archive/master.zip "Download scssphp-compass library from Github")  
-    *Skip this step if you don't need Compass support*  
-    Put files to the "protected/vendor/scssphp-compass" directory
 4.  Update your application's configuration *(e.g. protected/config/main.php)* like this:
     
     ```php
@@ -91,13 +77,6 @@ or manually by downloading required files.
             
             // Path and filename of scss.inc.php
             'compilerPath' => __DIR__ . '/../vendor/scssphp/scss.inc.php',
-            
-            // Path and filename of compass.inc.php
-            // Required only if Compass support is needed
-            'compassPath' => __DIR__ . '/../vendor/scssphp-compass/compass.inc.php',
-            
-            // Enable Compass support, defaults to false
-            'enableCompass' => true,
         ),
         ...
     ),
@@ -126,11 +105,6 @@ All options below are optional except the "class" item.
         // Path and filename of scss.inc.php
         // Defaults to the relative location in Composer's vendor directory
         'compilerPath' => __DIR__ . "/../../../vendor/leafo/scssphp/scss.inc.php",
-        
-        // Path and filename of compass.inc.php
-        // Required only if Compass support is needed
-        // Defaults to the relative location in Composer's vendor directory
-        'compassPath' => __DIR__ . '/../../../vendor/leafo/scssphp-compass/compass.inc.php',
 
         // Path for cache files. Will be used if Yii caching is not enabled.
         // Will be chmod'ed to become writable,
@@ -138,12 +112,7 @@ All options below are optional except the "class" item.
         // Yii aliases can be used.
         // Defaults to 'application.runtime.sass-cache'
         'cachePath' => 'application.runtime.sass-cache',
-        
-        // Enable Compass support.
-        // Automatically add required import paths and functions.
-        // Defaults to false
-        'enableCompass' => false,
-        
+                
         // Path to a directory with compiled CSS files.
         // Will be created automatically if it doesn't exist.
         // Will be chmod'ed to become writable,
@@ -391,7 +360,6 @@ Changelog
     - Add new formatting type ``SassHandler::OUTPUT_FORMATTING_CRUNCHED`` which
       can be used with ``compilerOutputFormatting`` parameter *(alexdevid)*
     - Add unit tests to check integration with ``scssphp`` compiler
-      and with ``scssphp-compass`` library
     - Fix a bug: ``$hashByName=true`` argument wasn't properly passed to the Yii's asset manager
     - Minor fixes and improvements
 

@@ -38,26 +38,6 @@ class SassHandler extends CApplicationComponent
     public $compilerPath;
 
     /**
-     * Path and filename of compass.inc.php
-     *
-     * Defaults to the relative location in Composer's vendor directory:
-     * __DIR__ . "/../../leafo/scssphp-compass/compass.inc.php"
-     *
-     * @var string
-     */
-    public $compassPath;
-
-    /**
-     * Enable Compass support.
-     * Automatically add required import paths and functions.
-     *
-     * Defaults to false
-     *
-     * @var boolean
-     */
-    public $enableCompass = false;
-
-    /**
      * Path to a directory with compiled CSS files.
      * Will be created automatically if it doesn't exist.
      * Will be chmod'ed to become writable, see "writableDirectoryPermissions"
@@ -209,11 +189,6 @@ class SassHandler extends CApplicationComponent
 
         if (!$this->compilerPath) {
             $this->compilerPath = $vendorPath . 'leafo/scssphp/scss.inc.php';
-        }
-
-        if (!$this->compassPath) {
-            $this->compassPath = $vendorPath
-                . "leafo/scssphp-compass/compass.inc.php";
         }
 
         parent::init();
@@ -424,12 +399,6 @@ class SassHandler extends CApplicationComponent
             require_once dirname(__FILE__) . '/ExtendedScssc.php';
             $this->scssc = new ExtendedScssc();
             $this->setImportPaths($this->importPaths);
-            if ($this->enableCompass) {
-                if (is_readable($this->compassPath)) {
-                    require_once $this->compassPath;
-                }
-                new scss_compass($this->scssc);
-            }
             $this->setupOutputFormatting($this->scssc);
         }
         return $this->scssc;
@@ -590,7 +559,6 @@ class SassHandler extends CApplicationComponent
             'compiledFiles' => $parsedFiles,
             'autoAddCurrentDirectoryAsImportPath'
                 => $this->autoAddCurrentDirectoryAsImportPath,
-            'enableCompass' => $this->enableCompass,
             'importPaths' => $this->compiler->getImportPaths(),
             'compilerOutputFormatting' => $this->compilerOutputFormatting,
         );
@@ -658,7 +626,6 @@ class SassHandler extends CApplicationComponent
 
         $fieldsToCheckForChangedValue = array(
             'autoAddCurrentDirectoryAsImportPath',
-            'enableCompass',
             'compilerOutputFormatting',
         );
         foreach ($fieldsToCheckForChangedValue as $field) {

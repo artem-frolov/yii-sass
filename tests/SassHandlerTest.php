@@ -43,20 +43,6 @@ class SassHandlerTest extends PHPUnit_Framework_TestCase
         );
     }
 
-    /**
-     * Test integration with scssphp-compass library
-     */
-    public function testCompass()
-    {
-        $this->sassHandler->compassPath =
-            __DIR__ . '/../vendor/leafo/scssphp-compass/compass.inc.php';
-        $this->sassHandler->enableCompass = true;
-        $scssFile = $this->fixturesDirectory . 'compass.scss';
-        $this->assertEquals(
-            'div{filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=10);opacity:0.1}',
-            $this->sassHandler->compile($scssFile)
-        );
-    }
 
     public function testGetCompiledFile()
     {
