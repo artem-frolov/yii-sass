@@ -121,7 +121,7 @@ class SassHandler extends CApplicationComponent
      *
      * @var integer
      */
-    public $writableFilePermissions = 0666;
+    public $writableFilePermissions = 0776;
 
     /**
      * Default value for $hashByName parameter in extension's methods.
@@ -176,21 +176,14 @@ class SassHandler extends CApplicationComponent
     /**
      * Compiler object
      *
-     * @var ExtendedScssc
+     * @var Sass
      */
     protected $scssc;
 
     /**
      * Initialize component
      */
-    public function init()
-    {
-        $vendorPath = __DIR__ . '/../../';
-
-        if (!$this->compilerPath) {
-            $this->compilerPath = $vendorPath . 'leafo/scssphp/scss.inc.php';
-        }
-
+    public function init() {
         parent::init();
     }
 
@@ -257,14 +250,12 @@ class SassHandler extends CApplicationComponent
     /**
      * Publish compiled CSS file.
      * Compile/recompile source SCSS file if needed.
-     *
      * Optionally can publish compiled CSS file inside
      * specific published directory.
      * It's helpful when CSS code has relative references to other
      * resources (images/fonts) and when these resources are also published
      * using Yii asset manager. This method allows to publish compiled CSS files
      * along with other resources to make relative references work.
-     *
      * E.g.:
      * "image.jpg" is stored inside path alias "application.files.images"
      * Somewhere in the code the following is called during page generation:
@@ -279,7 +270,6 @@ class SassHandler extends CApplicationComponent
      *     'application.files',
      *     'css_compiled'
      * );
-     *
      * @param string $sourcePath Path to the source SCSS file
      * @param string $insidePublishedDirectory Path to the directory
      *        with resource files which is published somewhere
@@ -294,6 +284,7 @@ class SassHandler extends CApplicationComponent
      *        See CAssetManager::publish() for details.
      *        "defaultHashByName" plugin parameter's value is used by default.
      * @return string URL of the published CSS file
+	 * @throws CException
      * @see CAssetManager::publish()
      */
     public function publish(
@@ -362,7 +353,7 @@ class SassHandler extends CApplicationComponent
     public function compile($sourcePath)
     {
         if ($this->autoAddCurrentDirectoryAsImportPath) {
-            $originalImportPaths = $this->compiler->getImportPaths();
+//            $originalImportPaths = $this->compiler->getImportPaths();
             $this->compiler->addImportPath(dirname($sourcePath));
         }
 
@@ -377,9 +368,9 @@ class SassHandler extends CApplicationComponent
 
 		$compiledCssCode 		= (new Autoprefixer($compiledCssCode))->compile();
 
-        if ($this->autoAddCurrentDirectoryAsImportPath) {
-            $this->compiler->setImportPaths($originalImportPaths);
-        }
+//        if ($this->autoAddCurrentDirectoryAsImportPath) {
+//            $this->compiler->setImportPaths($originalImportPaths);
+//        }
 
         return $compiledCssCode;
     }
@@ -388,18 +379,31 @@ class SassHandler extends CApplicationComponent
      * Get compiler
      * Loads required files on initial request
      *
-     * @return ExtendedScssc
+     * @return Sass
      */
     public function getCompiler()
     {
         if (!$this->scssc) {
-            if (is_readable($this->compilerPath)) {
-                require_once $this->compilerPath;
-            }
-            require_once dirname(__FILE__) . '/ExtendedScssc.php';
             $this->scssc = new ExtendedScssc();
-            $this->setImportPaths($this->importPaths);
+
+            if (YII_DEBUG) {
+            	$this->scssc->setComments(true);
+                $this->scssc->setEmbed(true);
+            } else {
+            	$this->scssc->setComments(false);
+            	$this->scssc->setEmbed(false);
+            }
+
+	        if (!empty($this->importPaths)) {
+                $this->scssc->setImportPaths($this->importPaths); // FIXME callables
+	        }
+
             $this->setupOutputFormatting($this->scssc);
+
+            // setMapPath
+	        // setMapRoot
+	        // setImporter
+	        // setFunctions -> asset path functie maken?
         }
         return $this->scssc;
     }
@@ -492,24 +496,24 @@ class SassHandler extends CApplicationComponent
 
     /**
      * Setup compiler output formatting
-     * @param ExtendedScssc $compiler
+     * @param Sass $compiler
      * @throws CException
      */
-    protected function setupOutputFormatting($compiler)
-    {
-        $formatters = array(
-            self::OUTPUT_FORMATTING_NESTED
-                => 'ScssPhp\ScssPhp\Formatter\Nested',
-            self::OUTPUT_FORMATTING_COMPRESSED
-                => 'ScssPhp\ScssPhp\Formatter\Compressed',
-            self::OUTPUT_FORMATTING_EXPANDED
-                => 'ScssPhp\ScssPhp\Formatter\Expanded',
-            self::OUTPUT_FORMATTING_CRUNCHED
-                => 'ScssPhp\ScssPhp\Formatter\Crunched',
+    protected function setupOutputFormatting($compiler) {
+    	if (YII_DEBUG) {
+    		$compiler->setIndent(true);
+	    } else {
+    		$compiler->setIndent(true);
+	    }
+        $formatting = array(
+            self::OUTPUT_FORMATTING_NESTED      => Sass::STYLE_NESTED,
+            self::OUTPUT_FORMATTING_COMPRESSED  => Sass::STYLE_COMPRESSED,
+            self::OUTPUT_FORMATTING_EXPANDED    => Sass::STYLE_EXPANDED,
+            self::OUTPUT_FORMATTING_CRUNCHED    => Sass::STYLE_COMPACT,
         );
-        if (isset($formatters[$this->compilerOutputFormatting])) {
-            $compiler->setFormatter(
-                $formatters[$this->compilerOutputFormatting]
+        if (in_array($this->compilerOutputFormatting, array_keys($formatting))) {
+            $compiler->setStyle(
+                $formatting[$this->compilerOutputFormatting]
             );
         } else {
             throw new CException(
@@ -526,21 +530,8 @@ class SassHandler extends CApplicationComponent
      *
      * @param array|string $paths Single import path or a list of paths
      */
-    protected function setImportPaths($paths)
-    {
-        $paths = (array) $paths;
-        $preparedPaths = array();
-
-        foreach ($paths as $originalPath) {
-            $preparedPath = YiiBase::getPathOfAlias($originalPath);
-            if ($preparedPath !== false) {
-                $preparedPaths[] = $preparedPath;
-            } else {
-                $preparedPaths[] = $originalPath;
-            }
-        }
-
-        $this->scssc->setImportPaths($preparedPaths);
+    protected function setImportPaths($paths) {
+        return $this->scssc->addImportPaths((array)$paths);
     }
 
     /**
@@ -552,7 +543,7 @@ class SassHandler extends CApplicationComponent
      */
     protected function saveParsedFilesInfoToCache($sourcePath)
     {
-        $parsedFiles = $this->compiler->getParsedFiles();
+        $parsedFiles = $this->compiler->getParsedFiles(); // FIXME
         $parsedFiles[$sourcePath] = filemtime($sourcePath);
 
         $info = array(
@@ -649,14 +640,13 @@ class SassHandler extends CApplicationComponent
             return true;
         }
 
-        foreach ($compiledInfo['compiledFiles'] as
-                 $compiledFile => $previousModificationTime) {
-            if (filemtime($compiledFile) > $previousModificationTime) {
-                return true;
-            }
-        }
+//        foreach ($compiledInfo['compiledFiles'] as $compiledFile => $previousModificationTime) {
+//            if (filemtime($compiledFile) > $previousModificationTime) {
+//                return true;
+//            }
+//        }
 
-        return false;
+        return true;//$this->forceCompilation;
     }
 
     /**
