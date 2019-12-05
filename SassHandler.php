@@ -350,11 +350,10 @@ class SassHandler extends CApplicationComponent
      * @throws CException
      * @return string Compiled CSS code
      */
-    public function compile($sourcePath)
-    {
+    public function compile($sourcePath) {
         if ($this->autoAddCurrentDirectoryAsImportPath) {
-//            $originalImportPaths = $this->compiler->getImportPaths();
             $this->compiler->addImportPath(dirname($sourcePath));
+            $this->compiler->addImportPath(YiiBase::getPathOfAlias('@webroot'));
         }
 
         $sourceCode = file_get_contents($sourcePath);
@@ -364,13 +363,11 @@ class SassHandler extends CApplicationComponent
             );
         }
 
-        $compiledCssCode = $this->compiler->compile($sourceCode);
+        $compiledCssCode = $this->compiler->compile(ltrim($sourceCode));
 
-		$compiledCssCode 		= (new Autoprefixer($compiledCssCode))->compile();
-
-//        if ($this->autoAddCurrentDirectoryAsImportPath) {
-//            $this->compiler->setImportPaths($originalImportPaths);
-//        }
+        if (!defined('YII_DEBUG') || !YII_DEBUG) {
+			$compiledCssCode 		= (new Autoprefixer($compiledCssCode))->compile();
+        }
 
         return $compiledCssCode;
     }

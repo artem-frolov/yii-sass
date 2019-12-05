@@ -13,6 +13,24 @@ class ExtendedScssc extends Sass {
 	public function __construct() {
 		parent::__construct();
 
+		parent::setFunctions([
+			'baseUrl' => function() {
+				EO::app()->getBaseUrl(true);
+			},
+			'relBaseUrl' => function() {
+				EO::app()->getBaseUrl(false);
+			},
+			'basePath' => function() {
+				EO::app()->getBasePath();
+			},
+		]);
+
+        if (!defined('YII_DEBUG') || !YII_DEBUG) {
+        	$this->setEmbed(true);
+        }
+
+		parent::setIncludePath($_SERVER['DOCUMENT_ROOT']);
+
 		$this->setImporter([$this, 'import']);
 	}
 
@@ -24,10 +42,11 @@ class ExtendedScssc extends Sass {
 	 * srcmap
 	 */
 	public function import($arg) {
-		// FIXME absoluut import path nodig
 		if (!in_array($arg, $this->parsedFiles)) {
 			$this->parsedFiles[] = $arg;
 		}
+
+		return $this->parsedFiles;
 	}
 
 
@@ -79,6 +98,11 @@ class ExtendedScssc extends Sass {
 	public function setImportPaths(array $paths) {
         $this->setIncludePath(implode(':', $paths));
     }
+
+
+	public function setIncludePath($path) {
+		parent::setIncludePath($path);
+	}
 
 
 	/**
