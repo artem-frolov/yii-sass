@@ -29,6 +29,7 @@ class ExtendedScssc extends Sass {
         	$this->setEmbed(true);
         }
 
+//		parent::setIncludePath(YiiBase::getPathOfAlias('@webroot'));
 		parent::setIncludePath($_SERVER['DOCUMENT_ROOT']);
 
 		$this->setImporter([$this, 'import']);
@@ -45,8 +46,6 @@ class ExtendedScssc extends Sass {
 		if (!in_array($arg, $this->parsedFiles)) {
 			$this->parsedFiles[] = $arg;
 		}
-
-		return $this->parsedFiles;
 	}
 
 

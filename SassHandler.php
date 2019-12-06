@@ -353,7 +353,7 @@ class SassHandler extends CApplicationComponent
     public function compile($sourcePath) {
         if ($this->autoAddCurrentDirectoryAsImportPath) {
             $this->compiler->addImportPath(dirname($sourcePath));
-            $this->compiler->addImportPath(YiiBase::getPathOfAlias('@webroot'));
+//            $this->compiler->addImportPath(YiiBase::getPathOfAlias('@webroot'));
         }
 
         $sourceCode = file_get_contents($sourcePath);
