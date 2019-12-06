@@ -53,16 +53,16 @@ class ExtendedScssc extends Sass {
 	 */
 	public function getParsedFiles() {
 		return $this->parsedFiles;
-    }
+  }
 
 
 	/**
      * Get list of current import paths
      * @return array
      */
-    public function getImportPaths() : array {
+  public function getImportPaths() : array {
         return explode(':', $this->getIncludePath());
-    }
+  }
 
 
 	/**
@@ -109,5 +109,4 @@ class ExtendedScssc extends Sass {
 	public function setIncludePath($path) {
 		parent::setIncludePath($path);
 	}
-
 }
