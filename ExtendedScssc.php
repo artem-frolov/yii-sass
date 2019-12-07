@@ -43,19 +43,26 @@ class ExtendedScssc extends Sass {
 	 * srcmap
 	 */
 	public function import($arg) {
-		if (!in_array($arg, $this->parsedFiles)) {
-			$this->parsedFiles[] = $arg;
+		if (!array_key_exists($arg, $this->parsedFiles)) {
+			$this->parsedFiles[$arg] = (new DateTime)->getTimestamp();
 		}
 	}
+
+	/**
+	 * @return array
+	 */
+	public function getParsedFiles() {
+		return $this->parsedFiles;
+  }
 
 
 	/**
      * Get list of current import paths
      * @return array
      */
-    public function getImportPaths() : array {
+  public function getImportPaths() : array {
         return explode(':', $this->getIncludePath());
-    }
+  }
 
 
 	/**
@@ -102,13 +109,4 @@ class ExtendedScssc extends Sass {
 	public function setIncludePath($path) {
 		parent::setIncludePath($path);
 	}
-
-
-	/**
-	 * @return array
-	 */
-	public function getParsedFiles() {
-		return $this->parsedFiles;
-    }
-
 }

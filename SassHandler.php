@@ -181,13 +181,6 @@ class SassHandler extends CApplicationComponent
     protected $scssc;
 
     /**
-     * Initialize component
-     */
-    public function init() {
-        parent::init();
-    }
-
-    /**
      * Publish and register compiled CSS file.
      * Compile/recompile source SCSS file if needed.
      *
@@ -637,13 +630,19 @@ class SassHandler extends CApplicationComponent
             return true;
         }
 
-//        foreach ($compiledInfo['compiledFiles'] as $compiledFile => $previousModificationTime) {
-//            if (filemtime($compiledFile) > $previousModificationTime) {
-//                return true;
-//            }
-//        }
+        foreach ($compiledInfo['compiledFiles'] as $compiledFile => $previousModificationTime) {
+        	if (!empty($compiledFile)) {
+        		 if (substr($compiledFile, -5) !== '.scss') {
+        		 	$compiledFile .= '.scss';
+				 }
 
-        return true;//$this->forceCompilation;
+				if (file_exists($compiledFile) && filemtime($compiledFile) > $previousModificationTime) {
+					return true;
+				}
+			}
+        }
+
+        return $this->forceCompilation;
     }
 
     /**
