@@ -31,7 +31,7 @@ class SassHandler extends CApplicationComponent
      * Path and filename of scss.inc.php
      *
      * Defaults to the relative location in Composer's vendor directory:
-     * __DIR__ . "/../../leafo/scssphp/scss.inc.php"
+     * __DIR__ . "/../../scssphp/scssphp/scss.inc.php"
      *
      * @var string
      */
@@ -345,8 +345,18 @@ class SassHandler extends CApplicationComponent
      */
     public function compile($sourcePath) {
         if ($this->autoAddCurrentDirectoryAsImportPath) {
+            // Theme sass
+            if ($theme = EO::app()->getTheme()) {
+            	if (!empty($theme->basePath)) {
+            		$this->compiler->addImportPath($theme->basePath);
+	            }
+            }
+
+        	// Project sass
             $this->compiler->addImportPath(dirname($sourcePath));
-//            $this->compiler->addImportPath(YiiBase::getPathOfAlias('@webroot'));
+
+            // Vendor sasss
+            $this->compiler->addImportPath(YiiBase::getPathOfAlias('vendor.digizijn'));
         }
 
         $sourceCode = file_get_contents($sourcePath);
