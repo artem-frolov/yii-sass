@@ -14,8 +14,7 @@
         }
     ],
     "require": {
-        "php": ">=5.4.0",
-        "scssphp/scssphp": "^1.0.4"
+        "php": ">=7.0.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^4.2",
