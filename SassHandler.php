@@ -311,9 +311,24 @@ class SassHandler extends CApplicationComponent
      * @throws CException
      * @return string
      */
-    public function getCompiledFile($sourcePath)
-    {
+    public function getCompiledFile($sourcePath) {
         $cssPath = $this->getCompiledCssFilePath($sourcePath);
+
+        if ($this->autoAddCurrentDirectoryAsImportPath) {
+            // Theme sass
+            if ($theme = EO::app()->getTheme()) {
+            	if (!empty($theme->basePath)) {
+            		$this->compiler->addImportPath($theme->basePath);
+	            }
+            }
+
+        	// Project sass
+            $this->compiler->addImportPath(dirname($sourcePath));
+
+            // Vendor sasss
+            $this->compiler->addImportPath(YiiBase::getPathOfAlias('vendor.digizijn'));
+        }
+
         if ($this->isCompilationNeeded($sourcePath)) {
             $compiledCssCode = $this->compile($sourcePath);
 
@@ -344,21 +359,6 @@ class SassHandler extends CApplicationComponent
      * @return string Compiled CSS code
      */
     public function compile($sourcePath) {
-        if ($this->autoAddCurrentDirectoryAsImportPath) {
-            // Theme sass
-            if ($theme = EO::app()->getTheme()) {
-            	if (!empty($theme->basePath)) {
-            		$this->compiler->addImportPath($theme->basePath);
-	            }
-            }
-
-        	// Project sass
-            $this->compiler->addImportPath(dirname($sourcePath));
-
-            // Vendor sasss
-            $this->compiler->addImportPath(YiiBase::getPathOfAlias('vendor.digizijn'));
-        }
-
         $sourceCode = file_get_contents($sourcePath);
         if ($sourceCode === false) {
             throw new CException(
