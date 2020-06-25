@@ -543,18 +543,31 @@ class SassHandler extends CApplicationComponent
      */
     protected function saveParsedFilesInfoToCache($sourcePath)
     {
-        $parsedFiles = $this->compiler->getParsedFiles(); // FIXME
+        $parsedFiles = $this->compiler->getParsedFiles();
         $parsedFiles[$sourcePath] = filemtime($sourcePath);
 
-        $info = array(
-            'compiledFiles' => $parsedFiles,
-            'autoAddCurrentDirectoryAsImportPath'
-                => $this->autoAddCurrentDirectoryAsImportPath,
-            'importPaths' => $this->compiler->getImportPaths(),
-            'compilerOutputFormatting' => $this->compilerOutputFormatting,
+        $info = $this->getCompiledInfo(
+        	$parsedFiles,
+	        $this->autoAddCurrentDirectoryAsImportPath,
+	        $this->compiler->getImportPaths(),
+	        $this->compilerOutputFormatting
         );
 
-        $this->cacheSet($this->getCacheCompiledPrefix() . $sourcePath, $info);
+        $pathInfo = $info;
+        unset($pathInfo['compiledFiles']);
+        $this->cacheSet($this->getCacheCompiledPrefix() . $sourcePath.'-'.md5(serialize($pathInfo)), $info);
+    }
+
+
+	public function getCompiledInfo(array $parsedFiles = [], bool $autoAddCurrentDirectoryAsImportPath = true, array $importPaths = [], $compilerOutputFormatting = 'nested') {
+        $info = array(
+            'compiledFiles' => $parsedFiles,
+            'autoAddCurrentDirectoryAsImportPath'   => $autoAddCurrentDirectoryAsImportPath,
+            'importPaths'                           => $importPaths,
+            'compilerOutputFormatting'              => $compilerOutputFormatting,
+        );
+
+        return $info;
     }
 
     /**
@@ -611,8 +624,20 @@ class SassHandler extends CApplicationComponent
      */
     protected function isLastCompilationEnvironmentChanged($path)
     {
+        $parsedFiles = $this->compiler->getParsedFiles();
+        $parsedFiles[$path] = filemtime($path);
+
+        $info = $this->getCompiledInfo(
+        	$parsedFiles,
+	        $this->autoAddCurrentDirectoryAsImportPath,
+	        $this->compiler->getImportPaths(),
+	        $this->compilerOutputFormatting
+        );
+
+        $pathInfo = $info;
+        unset($pathInfo['compiledFiles']);
         $compiledInfo = $this->cacheGet(
-            $this->getCacheCompiledPrefix() . $path
+            $this->getCacheCompiledPrefix() . $path . '-'. md5(serialize($pathInfo))
         );
 
         $fieldsToCheckForChangedValue = array(
@@ -628,7 +653,7 @@ class SassHandler extends CApplicationComponent
 
         if (
             !isset($compiledInfo['importPaths']) or
-            $compiledInfo['importPaths'] !== $this->compiler->getImportPaths()
+            $compiledInfo['importPaths'] != $this->compiler->getImportPaths()
         ) {
             return true;
         }
