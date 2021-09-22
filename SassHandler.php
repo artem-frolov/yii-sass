@@ -500,11 +500,12 @@ class SassHandler extends CApplicationComponent
      * @throws CException
      */
     protected function setupOutputFormatting($compiler) {
-    	if (YII_DEBUG) {
-    		$compiler->setIndent(true);
-	    } else {
-    		$compiler->setIndent(true);
-	    }
+        // setIndent not available in php 8.0 compiled version of sass.so
+        //    	if (YII_DEBUG) {
+        //    		$compiler->setIndent(true);
+        //	    } else {
+        //    		$compiler->setIndent(true);
+        //	    }
         $formatting = array(
             self::OUTPUT_FORMATTING_NESTED      => Sass::STYLE_NESTED,
             self::OUTPUT_FORMATTING_COMPRESSED  => Sass::STYLE_COMPRESSED,
