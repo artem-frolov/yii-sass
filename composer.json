@@ -14,14 +14,14 @@
         }
     ],
     "require": {
-        "php": ">=7.0.0"
+        "php": ">=7.0.0",
+		"scssphp/scssphp": "^1.12.0",
     },
     "require-dev": {
         "phpunit/phpunit": "^4.2",
         "phpmd/phpmd" : "*",
         "squizlabs/php_codesniffer": "*",
-        "yiisoft/yii": "^1.1",
-	  	"padaliyajay/php-autoprefixer": "dev-master"
+        "yiisoft/yii": "^1.1"
     },
     "autoload": {
         "classmap": [
